@@ -52,10 +52,7 @@ export const metadata: Metadata = {
 
 const banner = (
   <Banner>
-    🎉 Nextra 4.0 has been released.{' '}
-    <Link href="https://the-guild.dev/blog/nextra-4" className="text-current!">
-      Read blogpost
-    </Link>
+    🎉 Trabajando para empezar en 2026 🎉{' '}
   </Banner>
 )
 const navbar = (

@@ -32,7 +32,7 @@ const IndexPage: FC = () => {
         </p>
         <p className="subtitle">
           <Link className={styles.cta} href="/docs">
-            Get started <span>→</span>
+            Saber más <span>→</span>
           </Link>
         </p>
       </div>

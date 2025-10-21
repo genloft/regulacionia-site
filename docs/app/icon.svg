@@ -1,1 +1,56 @@
-<svg id="visual" viewBox="0 0 900 600" width="900" height="600" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1"><rect x="0" y="0" width="900" height="600" fill="#002233"></rect><path d="M0 496L21.5 478C43 460 86 424 128.8 419.7C171.7 415.3 214.3 442.7 257.2 460C300 477.3 343 484.7 385.8 482.3C428.7 480 471.3 468 514.2 454.5C557 441 600 426 642.8 436.8C685.7 447.7 728.3 484.3 771.2 478.3C814 472.3 857 423.7 878.5 399.3L900 375L900 601L878.5 601C857 601 814 601 771.2 601C728.3 601 685.7 601 642.8 601C600 601 557 601 514.2 601C471.3 601 428.7 601 385.8 601C343 601 300 601 257.2 601C214.3 601 171.7 601 128.8 601C86 601 43 601 21.5 601L0 601Z" fill="#0066FF" stroke-linecap="round" stroke-linejoin="miter"></path></svg>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="66.888824mm"
+   height="30.10556mm"
+   viewBox="0 0 66.888824 30.10556"
+   version="1.1"
+   id="svg1"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs1">
+    <color-profile
+       name="Generic-RGB-Profile"
+       xlink:href="file:///System/Library/ColorSync/Profiles/Generic%20RGB%20Profile.icc"
+       id="color-profile2" />
+  </defs>
+  <g
+     id="layer2"
+     transform="translate(-14.683416,-49.796888)">
+    <g
+       id="g10-7"
+       transform="translate(-0.36217536,32.048702)"
+       style="fill:#ffffff">
+      <text
+         xml:space="preserve"
+         style="font-size:41.0565px;font-family:'BBH Sans Hegarty';-inkscape-font-specification:'BBH Sans Hegarty';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#ffffff;stroke-width:3.42137"
+         x="44.737747"
+         y="45.702591"
+         id="text4-2"
+         transform="scale(0.95504736,1.0470685)"><tspan
+           id="tspan4-9"
+           style="fill:#ffffff;stroke-width:3.42137"
+           x="44.737747"
+           y="45.702591">I</tspan></text>
+      <path
+         id="text3-7"
+         style="font-size:41.0565px;font-family:'BBH Sans Hegarty';-inkscape-font-specification:'BBH Sans Hegarty';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#ffffff;stroke-width:3.42137"
+         d="m 22.410768,16.950932 -6.633193,4.635769 -0.02381,-0.01579 v 24.11952 H 27.49591 v -8.088042 h 4.762653 c 1.91597,0 2.873716,0.957881 2.873716,2.873851 v 5.214191 h 11.742684 v -6.404596 c 0,-1.450663 -0.232696,-2.627996 -0.698003,-3.531239 -0.465307,-0.903243 -1.245364,-1.614487 -2.340204,-2.134536 -1.067469,-0.520049 -2.531862,-0.917189 -4.39309,-1.190899 V 31.60792 c 1.861228,-0.27371 3.325621,-0.765996 4.39309,-1.477642 1.09484,-0.711646 1.874897,-1.560294 2.340204,-2.54565 0.465307,-1.012727 0.698003,-2.080334 0.698003,-3.202545 0,-2.244422 -0.766846,-4.037359 -2.299622,-5.378538 -1.505405,-1.36855 -3.763066,-2.05261 -6.773876,-2.05261 z m 5.085142,8.744936 h 6.035291 c 0.520049,0 0.930976,0.164589 1.232057,0.493041 0.301081,0.328452 0.451267,0.766369 0.451267,1.313789 0,0.520049 -0.150186,0.957965 -0.451267,1.313788 -0.301081,0.328452 -0.712008,0.492548 -1.232057,0.492548 H 27.49591 Z"
+         transform="scale(0.95504736,1.0470685)" />
+      <text
+         xml:space="preserve"
+         style="font-size:41.0565px;font-family:'BBH Sans Hegarty';-inkscape-font-specification:'BBH Sans Hegarty';text-align:start;writing-mode:lr-tb;direction:ltr;text-anchor:start;fill:#ffffff;stroke-width:3.42137"
+         x="50.030724"
+         y="45.689861"
+         id="text5-5"
+         transform="scale(0.95504736,1.0470685)"><tspan
+           id="tspan5-65"
+           style="fill:#ffffff;stroke-width:3.42137"
+           x="50.030724"
+           y="45.689861">A</tspan></text>
+    </g>
+  </g>
+</svg>

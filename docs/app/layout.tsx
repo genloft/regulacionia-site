@@ -11,16 +11,16 @@ import inkeep from './showcase/_logos/inkeep.png'
 import './globals.css'
 
 export const metadata: Metadata = {
-  description: 'Make beautiful websites with Next.js & MDX.',
-  metadataBase: new URL('https://nextra.site'),
+  description: 'Asociación dedicada a promover el desarrollo ético, transparente y seguro de la inteligencia artificial.',
+  metadataBase: new URL('https://regulacionia.es'),
   keywords: [
-    'Nextra',
-    'Next.js',
-    'React',
-    'JavaScript',
-    'MDX',
-    'Markdown',
-    'Static Site Generator'
+    'Regulacion IA',
+    'Inteligencia Artificial',
+    'IA Andalucia',
+    'RIA Andalucia',
+    'IA Ética',
+    'Etica tecnologica',
+    'Legislacion IA'
   ],
   generator: 'Next.js',
   applicationName: 'Nextra',
@@ -28,14 +28,14 @@ export const metadata: Metadata = {
     title: 'Nextra'
   },
   title: {
-    default: 'Nextra – Next.js Static Site Generator',
-    template: '%s | Nextra'
+    default: 'RegulacionIA – Por el desarrollo ético de la IA',
+    template: '%s | RegulacionIA'
   },
   openGraph: {
     // https://github.com/vercel/next.js/discussions/50189#discussioncomment-10826632
     url: './',
     siteName: 'Nextra',
-    locale: 'en_US',
+    locale: 'es_ES',
     type: 'website'
   },
   other: {

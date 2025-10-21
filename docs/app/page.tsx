@@ -22,17 +22,13 @@ const IndexPage: FC = () => {
     <div className="home-content">
       <div className="content-container">
         <h1 className="headline">
-          Make beautiful websites <br className="max-sm:hidden" />
-          with Next.js & MDX
+          Por una IA ética, responsable <br className="max-sm:hidden" />
+          y al servicio del bienestar global.
         </h1>
         <p className="subtitle">
-          Simple, powerful and flexible site generation framework{' '}
+          RegulacionIA trabaja por un desarrollo tecnológico tanto para personas como en empresas{' '}
           <br className="max-md:hidden" />
-          with everything you love from{' '}
-          <Link href="https://nextjs.org" className="text-current">
-            Next.js
-          </Link>
-          .
+          que transmita el respeto de los valores humanos fomentando una innovación segura para todos.{' '}
         </p>
         <p className="subtitle">
           <Link className={styles.cta} href="/docs">

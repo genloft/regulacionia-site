@@ -58,16 +58,19 @@ const banner = (
 const navbar = (
   <Navbar
     logo={
-      // Use the site icon from the app folder as the navbar logo
-      <img
+      // Use the site icon from the app folder as the navbar logo, force a small size like the original
+      <NextImage
         src="/icon.svg"
         alt="RegulacionIA"
+        width={20}
         height={20}
         className={cn(
+          'inline-block h-5 w-5 object-contain shrink-0',
           'hover:transition-all hover:duration-1000 motion-reduce:hover:transition-none',
           '[mask-image:linear-gradient(60deg,#000_25%,rgba(0,0,0,.2)_50%,#000_75%)] [mask-position:0] [mask-size:400%]',
           'hover:[mask-position:100%]'
         )}
+        priority
       />
     }
     projectLink="https://github.com/shuding/nextra"

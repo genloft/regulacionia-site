@@ -1,5 +1,5 @@
 import { getEnhancedPageMap } from '@components/get-page-map'
-import { NextraLogo, VercelLogo } from '@components/icons'
+import { VercelLogo } from '@components/icons'
 import { ChatButton } from '@components/inkeep-chat-button'
 import cn from 'clsx'
 import type { Metadata } from 'next'
@@ -52,14 +52,17 @@ export const metadata: Metadata = {
 
 const banner = (
   <Banner>
-    🎉 Trabajando para empezar en 2026_ 🎉{' '}
+    🎉 Trabajando para empezar en 2026 🎉{' '}
   </Banner>
 )
 const navbar = (
   <Navbar
     logo={
-      <NextraLogo
-        height="20"
+      // Use the site icon from the app folder as the navbar logo
+      <img
+        src="/icon.svg"
+        alt="RegulacionIA"
+        height={20}
         className={cn(
           'hover:transition-all hover:duration-1000 motion-reduce:hover:transition-none',
           '[mask-image:linear-gradient(60deg,#000_25%,rgba(0,0,0,.2)_50%,#000_75%)] [mask-position:0] [mask-size:400%]',

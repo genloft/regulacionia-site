@@ -52,7 +52,7 @@ export const metadata: Metadata = {
 
 const banner = (
   <Banner>
-    🎉 Trabajando para empezar en 2026.. 🎉{' '}
+    🎉 Trabajando para empezar en 2026_ 🎉{' '}
   </Banner>
 )
 const navbar = (

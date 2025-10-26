@@ -58,15 +58,15 @@ const banner = (
 const navbar = (
   <Navbar
     logo={
-      // Use the site icon as the navbar logo, now at 2x the previous size
+      // Use the site icon as the navbar logo, now 1/5 larger than the previous adjustment
       <NextImage
         src="/icon.svg"
         alt="RegulacionIA"
-        width={56}
-        height={56}
-        sizes="(max-width: 768px) 56px, 64px"
+        width={104}
+        height={104}
+        sizes="(max-width: 768px) 90px, 104px"
         className={cn(
-          'inline-block h-14 w-14 md:h-16 md:w-16 object-contain shrink-0',
+          'inline-block h-[90px] w-[90px] md:h-[104px] md:w-[104px] object-contain shrink-0',
           'hover:transition-all hover:duration-1000 motion-reduce:hover:transition-none',
           '[mask-image:linear-gradient(60deg,#000_25%,rgba(0,0,0,.2)_50%,#000_75%)] [mask-position:0] [mask-size:400%]',
           'hover:[mask-position:100%]'

@@ -1,12 +1,12 @@
 import { getEnhancedPageMap } from '@components/get-page-map'
 import { VercelLogo } from '@components/icons'
 import { ChatButton } from '@components/inkeep-chat-button'
-import cn from 'clsx'
+import { ThemeAwareLogo } from '@components/theme-logo'
 import type { Metadata } from 'next'
 import NextImage from 'next/image'
 import { Footer, Layout, Link, Navbar } from 'nextra-theme-docs'
 import { Anchor, Banner, Head } from 'nextra/components'
-import type { FC } from 'react'
+import type { FC, PropsWithChildren } from 'react'
 import inkeep from './showcase/_logos/inkeep.png'
 import './globals.css'
 
@@ -57,23 +57,7 @@ const banner = (
 )
 const navbar = (
   <Navbar
-    logo={
-      // Use the site icon as the navbar logo, now 1/5 larger than the previous adjustment
-      <NextImage
-        src="/icon.svg"
-        alt="RegulacionIA"
-        width={104}
-        height={104}
-        sizes="(max-width: 768px) 90px, 104px"
-        className={cn(
-          'inline-block h-[90px] w-[90px] md:h-[104px] md:w-[104px] object-contain shrink-0',
-          'hover:transition-all hover:duration-1000 motion-reduce:hover:transition-none',
-          '[mask-image:linear-gradient(60deg,#000_25%,rgba(0,0,0,.2)_50%,#000_75%)] [mask-position:0] [mask-size:400%]',
-          'hover:[mask-position:100%]'
-        )}
-        priority
-      />
-    }
+    logo={<ThemeAwareLogo />}
     projectLink="https://github.com/shuding/nextra"
   />
 ) 
@@ -95,7 +79,11 @@ const footer = (
   </Footer>
 )
 
-const RootLayout: FC<LayoutProps<'/'>> = async ({ children }) => {
+type LayoutProps<T extends string> = PropsWithChildren<{
+  pageOpts: T
+}>
+
+const RootLayout: FC<LayoutProps<any>> = async ({ children }) => {
   const pageMap = await getEnhancedPageMap()
   return (
     <html lang="en" dir="ltr" suppressHydrationWarning>

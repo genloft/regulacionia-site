@@ -1,23 +1,62 @@
+'use client'
+
 import { ArrowRightIcon } from '@components/icons'
 import type { Metadata } from 'next'
 import Image from 'next/image'
 import { Link } from 'nextra-theme-docs'
 import { MdxIcon } from 'nextra/icons'
-import docsCardDark from 'public/assets/card-1.dark.png'
-import docsCard from 'public/assets/card-1.png'
 import { Feature, Features } from './_components/features'
 import { MotionDiv, MotionH3 } from './_components/framer-motion'
 import { I18n } from './_components/i18n-demo'
 import styles from './page.module.css'
 import './page.css'
-import type { FC } from 'react'
+import type { FC, FormEvent } from 'react'
+import { useState } from 'react'
+import docsCardDark from 'public/assets/card-1.dark.png'
+import docsCard from 'public/assets/card-1.png'
 
-export const metadata: Metadata = {
-  description:
-    'Asociación sin anímo de lucro y de interés social dedicada a promover el desarrollo ético, transparente y seguro de la inteligencia artificial.'
-}
+// export const metadata: Metadata = {
+//   description:
+//     'Asociación sin anímo de lucro y de interés social dedicada a promover el desarrollo ético, transparente y seguro de la inteligencia artificial.'
+// }
 
 const IndexPage: FC = () => {
+  const [status, setStatus] = useState('')
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    const form = event.currentTarget
+    setStatus('Enviando...')
+
+    const formData = new FormData(form)
+    const data = {
+      nombre: formData.get('nombre'),
+      mail: formData.get('mail'),
+      interes: formData.get('interes'),
+      mensaje: formData.get('mensaje')
+    }
+
+    try {
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
+
+      if (response.ok) {
+        setStatus('¡Gracias! Tus datos han sido enviados.')
+        form.reset()
+      } else {
+        setStatus('Error al enviar el formulario. Inténtalo de nuevo.')
+      }
+    } catch (error) {
+      console.error("Error en la petición del formulario:", error); // <--- AÑADIR ESTA LÍNEA
+      setStatus('Error de red. Por favor, comprueba tu conexión.')
+    }
+  }
+
   return (
     <div className="home-content">
       <div className="content-container">
@@ -57,42 +96,55 @@ const IndexPage: FC = () => {
                 in minutes
               </h3>
             </Feature>
-            <Feature index={1} centered href="/docs/guide/image">
-              <h3>
-                Links and images are <br className="show-on-mobile" />
-                always <span className="font-light">optimized</span>
-              </h3>
-              <p className="mb-8 text-start">
-                Nextra automatically converts Markdown links and images to use{' '}
-                <Link href="https://nextjs.org/docs/routing/introduction#linking-between-pages">
-                  Next.js Link
-                </Link>{' '}
-                and{' '}
-                <Link href="https://nextjs.org/docs/app/getting-started/images#local-images">
-                  Next.js Image
-                </Link>{' '}
-                when possible. No slow navigation or layout shift.
+            <Feature index={1} centered className="prose dark:prose-invert">
+              <h3>Únete a la comunidad</h3>
+              <p>
+                Si estás interesado en formar parte de la asociación o simplemente quieres mantenerte informado, déjanos tus datos.
               </p>
-              <div>
-                <div className={styles.optimization}>
-                  <div style={{ fontSize: '.9rem' }} className="leading-8">
-                    <code>[Learn more](/more)</code>
-                    <br />
-                    <code>![Hero](/hero.png)</code>
+              <form onSubmit={handleSubmit} className="mt-6 w-full max-w-lg text-left">
+                <div className="flex flex-wrap -mx-3 mb-4">
+                  <div className="w-full md:w-1/2 px-3 mb-4 md:mb-0">
+                    <label className="block uppercase tracking-wide text-xs font-bold mb-2" htmlFor="grid-first-name">
+                      Nombre
+                    </label>
+                    <input name="nombre" required className="appearance-none block w-full bg-gray-100 dark:bg-gray-800 border rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white dark:focus:bg-gray-700" id="grid-first-name" type="text" placeholder="Jane" />
+                  </div>
+                  <div className="w-full md:w-1/2 px-3">
+                    <label className="block uppercase tracking-wide text-xs font-bold mb-2" htmlFor="grid-email">
+                      Mail
+                    </label>
+                    <input name="mail" required className="appearance-none block w-full bg-gray-100 dark:bg-gray-800 border rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white dark:focus:bg-gray-700" id="grid-email" type="email" placeholder="jane.doe@email.com" />
                   </div>
                 </div>
-                <ArrowRightIcon
-                  width="1.2em"
-                  className="mx-auto my-6 rotate-90 text-neutral-600 dark:text-neutral-400"
-                />
-                <div className={styles.optimization}>
-                  <div style={{ fontSize: '.9rem' }} className="leading-8">
-                    <code>{'<Link .../>'}</code>
-                    <br />
-                    <code>{'<Image .../>'}</code>
+                <div className="flex flex-wrap -mx-3 mb-4">
+                  <div className="w-full px-3">
+                    <label className="block uppercase tracking-wide text-xs font-bold mb-2" htmlFor="grid-state">
+                      Tu interés en la IA
+                    </label>
+                    <div className="relative">
+                      <select name="interes" required className="block appearance-none w-full bg-gray-100 dark:bg-gray-800 border px-4 py-3 pr-8 rounded leading-tight focus:outline-none focus:bg-white dark:focus:bg-gray-700" id="grid-state">
+                        <option>Desarrollo sobre IA</option>
+                        <option>Trabajo con IA</option>
+                        <option>Solo estoy interesado en IA</option>
+                      </select>
+                    </div>
                   </div>
                 </div>
-              </div>
+                <div className="flex flex-wrap -mx-3 mb-2">
+                  <div className="w-full px-3">
+                    <label className="block uppercase tracking-wide text-xs font-bold mb-2" htmlFor="grid-message">
+                      ¿Quieres añadir algo más?
+                    </label>
+                    <textarea name="mensaje" className="appearance-none block w-full bg-gray-100 dark:bg-gray-800 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white dark:focus:bg-gray-700 h-24 resize-none" id="grid-message"></textarea>
+                  </div>
+                </div>
+                <div className="flex items-center gap-4">
+                  <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded disabled:opacity-50" type="submit" disabled={status === 'Enviando...'}>
+                    {status === 'Enviando...' ? 'Enviando...' : 'Enviar'}
+                  </button>
+                  {status && <p className="text-sm">{status}</p>}
+                </div>
+              </form>
             </Feature>
             <Feature
               index={2}
@@ -304,15 +356,15 @@ const IndexPage: FC = () => {
               </p>
             </Feature>
             <Feature index={10} large>
-              <h3>And more...</h3>
+              <h3>Y más...</h3>
               <p>
-                SEO / RTL Layout / Pluggable Themes / Built-in Components / Last
-                Git Edit Time / Multi-Docs...
-                <br />A lot of new possibilities to be explored.
+                SEO / Diseño RTL / Temas Conectables / Componentes Integrados /
+                Última Edición de Git / Multi-Docs...
+                <br />Un montón de nuevas posibilidades por explorar.
               </p>
               <p className="subtitle">
                 <Link className="no-underline" href="/docs">
-                  Start using Nextra →
+                  Empieza a usar Nextra →
                 </Link>
               </p>
             </Feature>

@@ -8,6 +8,7 @@ import { MdxIcon } from 'nextra/icons'
 import { Feature, Features } from './_components/features'
 import { MotionDiv, MotionH3 } from './_components/framer-motion'
 import { I18n } from './_components/i18n-demo'
+import { AINews } from './_components/ai-news'
 import styles from './page.module.css'
 import './page.css'
 import type { FC, FormEvent } from 'react'
@@ -83,18 +84,13 @@ const IndexPage: FC = () => {
               large
               centered
               id="docs-card"
-              href="/docs/docs-theme/start"
             >
-              <Image src={docsCard} alt="Background" loading="eager" />
-              <Image
-                src={docsCardDark}
-                alt="Background (Dark)"
-                loading="eager"
-              />
-              <h3>
-                Full-power documentation <br className="show-on-mobile" />
-                in minutes
-              </h3>
+              <div className="relative w-full h-full flex flex-col">
+                <h3 className="text-2xl font-bold mb-4 text-center">
+                  Últimas Noticias de IA
+                </h3>
+                <AINews />
+              </div>
             </Feature>
             <Feature index={1} centered className="prose dark:prose-invert">
               <h3>Únete a la comunidad</h3>

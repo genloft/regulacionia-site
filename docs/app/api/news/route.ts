@@ -263,18 +263,26 @@ export async function GET(request: Request) {
   try {
     console.log('📰 Obteniendo noticias de medios españoles...')
     
-    // RSS feeds de medios españoles de calidad
+    // RSS feeds de medios españoles de calidad + fuentes internacionales en español
     const rssFeeds = [
+      // Medios españoles generales
       { url: 'https://feeds.elpais.com/mrss-s/pages/ep/site/elpais.com/section/tecnologia/portada', name: 'El País' },
       { url: 'https://e00-elmundo.uecdn.es/elmundo/rss/tecnologia.xml', name: 'El Mundo' },
       { url: 'https://www.abc.es/rss/feeds/abc_tecnologia.xml', name: 'ABC' },
       { url: 'https://www.expansion.com/rss/tecnologia.xml', name: 'Expansión' },
+      { url: 'https://www.larazon.es/rss/tecnologia.xml', name: 'La Razón' },
+      { url: 'https://www.elespanol.com/rss/omicrono/', name: 'El Español' },
+      
+      // Medios especializados en tecnología (más IA)
       { url: 'https://www.xataka.com/index.xml', name: 'Xataka' },
       { url: 'https://www.genbeta.com/index.xml', name: 'Genbeta' },
-      { url: 'https://www.elespanol.com/rss/omicrono/', name: 'El Español' },
       { url: 'https://hipertextual.com/feed', name: 'Hipertextual' },
       { url: 'https://www.muyinteresante.es/feed/', name: 'Muy Interesante' },
-      { url: 'https://www.larazon.es/rss/tecnologia.xml', name: 'La Razón' }
+      
+      // Fuentes adicionales con más contenido
+      { url: 'https://www.elconfidencial.com/rss/tecnologia/', name: 'El Confidencial' },
+      { url: 'https://computerhoy.com/rss', name: 'Computer Hoy' },
+      { url: 'https://www.europapress.es/rss/rss.aspx?ch=434', name: 'Europa Press Tech' }
     ]
     
     const allArticles: NewsArticle[] = []
@@ -294,10 +302,12 @@ export async function GET(request: Request) {
       if (result.status === 'fulfilled' && result.value && result.value.length > 0) {
         console.log(`✅ ${feed.name}: ${result.value.length} artículos`)
         
-        // Filtrar solo artículos relacionados con IA
+        // Filtrar solo artículos ESTRICTAMENTE relacionados con IA
         const aiArticles = result.value.filter((article: any) => {
           const text = `${article.title} ${article.description}`.toLowerCase()
-          return text.match(/\b(inteligencia artificial|ia|ai|chatgpt|openai|deepmind|machine learning|deep learning|algoritmo|neural|gpt|claude|gemini|copilot|bard|llm|transformers)\b/i)
+          // Filtro ESTRICTO: solo términos específicos de IA
+          // Debe mencionar explícitamente IA, modelos de lenguaje, o tecnologías de IA específicas
+          return text.match(/\b(inteligencia artificial|ia\b(?! de|s\b)|ai\b(?! de|s\b)|chatgpt|openai|deepmind|anthropic|machine learning|deep learning|red neuronal|redes neuronales|neural network|gpt-|gpt |claude|gemini|copilot|bard|llm|modelo de lenguaje|language model|generative|generativa|transformer|stable diffusion|midjourney|dall-e|dall·e)\b/i)
         })
         
         console.log(`🎯 ${feed.name}: ${aiArticles.length} artículos sobre IA`)
@@ -388,19 +398,19 @@ export async function GET(request: Request) {
     console.log(`🇪🇸 Artículos en español: ${spanishArticles.length}`)
     console.log(`🇬🇧 Artículos en inglés: ${englishArticles.length}`)
     
-    // Priorizar contenido en español: tomar 4 en español + 2 en inglés
+    // Priorizar contenido en español: tomar hasta 10 artículos (8 español + 2 inglés)
     const selectedSpanish = spanishArticles
       .sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime())
-      .slice(0, 4)
+      .slice(0, 8)
     
     const selectedEnglish = englishArticles
       .sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime())
       .slice(0, 2)
     
-    // Combinar y ordenar por fecha
+    // Combinar y ordenar por fecha, limitar a 10
     const sortedArticles = [...selectedSpanish, ...selectedEnglish]
       .sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime())
-      .slice(0, 6)
+      .slice(0, 10)
     
     console.log(`✨ Devolviendo ${sortedArticles.length} noticias (${selectedSpanish.length} ES + ${selectedEnglish.length} EN)`)
     

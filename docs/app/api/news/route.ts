@@ -19,29 +19,64 @@ const AI_CATEGORIES = {
   TECHNOLOGY: 'Tecnología',
   BUSINESS: 'Negocios',
   RESEARCH: 'Investigación',
-  SOCIETY: 'Sociedad'
+  SOCIETY: 'Sociedad',
+  LABOR: 'Laboral',
+  HEALTH: 'Salud',
+  EDUCATION: 'Educación'
 }
 
-// Función para categorizar noticias basándose en palabras clave
+// Función para categorizar noticias basándose en palabras clave con priorización
 function categorizeNews(title: string, description: string): string {
   const text = `${title} ${description}`.toLowerCase()
   
-  if (text.match(/regulación|regulacion|ley|normativa|legislación|legislacion|política|politica|parlamento|gobierno/)) {
-    return AI_CATEGORIES.REGULATION
-  }
-  if (text.match(/ética|etica|responsable|sesgo|privacidad|derechos|transparencia|discriminación|discriminacion/)) {
-    return AI_CATEGORIES.ETHICS
-  }
-  if (text.match(/investigación|investigacion|estudio|científico|cientifico|desarrollo|descubrimiento|avance/)) {
-    return AI_CATEGORIES.RESEARCH
-  }
-  if (text.match(/empresa|negocio|mercado|inversión|inversion|startup|económico|economico|industria/)) {
-    return AI_CATEGORIES.BUSINESS
-  }
-  if (text.match(/sociedad|empleo|trabajo|educación|educacion|impacto social|salud|medioambiente/)) {
-    return AI_CATEGORIES.SOCIETY
+  // Array de categorías con sus patrones, ordenadas por especificidad
+  const categories = [
+    {
+      name: AI_CATEGORIES.LABOR,
+      pattern: /\b(empleo|trabajo|trabajador|salario|salarial|laboral|despido|contrato|sindic|empleado|desempleo|paro|rrhh|recursos humanos|puesto|vacante|oferta de trabajo)\b/i
+    },
+    {
+      name: AI_CATEGORIES.REGULATION,
+      pattern: /\b(regulación|regulacion|ley|leyes|normativa|legislación|legislacion|política|politica|parlamento|gobierno|directiva|reglamento|compliance|legal|jurídico|juridico)\b/i
+    },
+    {
+      name: AI_CATEGORIES.ETHICS,
+      pattern: /\b(ética|etica|responsable|sesgo|sesgos|bias|privacidad|derechos|transparencia|discriminación|discriminacion|fairness|accountability|confianza|seguridad)\b/i
+    },
+    {
+      name: AI_CATEGORIES.HEALTH,
+      pattern: /\b(salud|médico|medico|medicina|hospital|paciente|diagnóstico|diagnostico|tratamiento|enfermedad|sanitario|clínico|clinico|healthcare)\b/i
+    },
+    {
+      name: AI_CATEGORIES.EDUCATION,
+      pattern: /\b(educación|educacion|escuela|universidad|estudiante|aprendizaje|formación|formacion|academia|académico|academico|curso|enseñanza|ensenanza)\b/i
+    },
+    {
+      name: AI_CATEGORIES.RESEARCH,
+      pattern: /\b(investigación|investigacion|estudio|científico|cientifico|paper|research|desarrollo|descubrimiento|avance|breakthrough|experimento|laboratorio)\b/i
+    },
+    {
+      name: AI_CATEGORIES.BUSINESS,
+      pattern: /\b(empresa|negocio|mercado|inversión|inversion|startup|económico|economico|industria|corporación|corporacion|comercial|ventas|beneficio|cotiza|bolsa|fintech)\b/i
+    },
+    {
+      name: AI_CATEGORIES.SOCIETY,
+      pattern: /\b(sociedad|social|comunidad|ciudadano|impacto social|medioambiente|medio ambiente|climate|sostenible|inclusión|inclusion|diversidad)\b/i
+    },
+    {
+      name: AI_CATEGORIES.TECHNOLOGY,
+      pattern: /\b(tecnología|tecnologia|tech|software|hardware|algorithm|modelo|neural|deep learning|machine learning|chatgpt|gpt|llm|api|cloud|data)\b/i
+    }
+  ]
+  
+  // Buscar la primera categoría que coincida
+  for (const category of categories) {
+    if (category.pattern.test(text)) {
+      return category.name
+    }
   }
   
+  // Si no coincide con ninguna, por defecto Tecnología
   return AI_CATEGORIES.TECHNOLOGY
 }
 
@@ -65,30 +100,64 @@ export async function GET(request: Request) {
     
     const NEWS_API_KEY = process.env.NEWS_API_KEY || ''
     
-    // Búsqueda de noticias de IA en español y en inglés
-    const queries = [
-      'inteligencia artificial España',
-      'artificial intelligence regulation',
-      'AI ethics Europe'
+    console.log('🔑 API Key detectada:', NEWS_API_KEY ? `Sí (${NEWS_API_KEY.substring(0, 8)}...)` : 'No')
+    
+    // Estrategia mixta: usar top-headlines que funciona mejor con plan gratuito
+    // y filtrar por términos de IA
+    const searches = [
+      {
+        type: 'top-headlines',
+        params: 'category=technology&language=en',
+        label: 'Tech headlines (EN)'
+      },
+      {
+        type: 'everything',
+        params: 'q=artificial+intelligence&language=en&sortBy=publishedAt',
+        label: 'AI news (EN)'
+      },
+      {
+        type: 'everything', 
+        params: 'q=inteligencia+artificial&language=es&sortBy=publishedAt',
+        label: 'AI news (ES)'
+      }
     ]
     
     const allArticles: NewsArticle[] = []
     
     // Si tienes NEWS_API_KEY configurada
     if (NEWS_API_KEY && NEWS_API_KEY !== '') {
-      for (const query of queries) {
+      console.log('📰 Intentando obtener noticias de NewsAPI...')
+      
+      for (const search of searches) {
         try {
           const response = await fetch(
-            `https://newsapi.org/v2/everything?q=${encodeURIComponent(query)}&language=es,en&sortBy=publishedAt&pageSize=10&apiKey=${NEWS_API_KEY}`,
-            { next: { revalidate: 3600 } }
+            `https://newsapi.org/v2/${search.type}?${search.params}&pageSize=20&apiKey=${NEWS_API_KEY}`,
+            { 
+              next: { revalidate: 3600 },
+              cache: 'no-store' // Evitar cache para debugging
+            }
           )
+          
+          console.log(`🔍 ${search.label} - Status: ${response.status}`)
           
           if (response.ok) {
             const data = await response.json()
             
+            console.log(`✅ Artículos obtenidos para "${search.label}":`, data.articles?.length || 0)
+            
             if (data.articles) {
               const processedArticles = data.articles
-                .filter((article: any) => article.title && article.url && !article.title.includes('[Removed]'))
+                .filter((article: any) => {
+                  if (!article.title || !article.url || article.title.includes('[Removed]')) return false
+                  
+                  // Si es de tech headlines, filtrar solo las relacionadas con IA
+                  if (search.type === 'top-headlines') {
+                    const text = `${article.title} ${article.description || ''}`.toLowerCase()
+                    return text.match(/\b(ai|artificial intelligence|machine learning|chatgpt|openai|deepmind|neural network|llm|gpt|claude|gemini)\b/i)
+                  }
+                  
+                  return true
+                })
                 .map((article: any) => ({
                   title: article.title,
                   summary: generateSummary(article.description || article.content || ''),
@@ -98,17 +167,22 @@ export async function GET(request: Request) {
                   source: article.source.name
                 }))
               
+              console.log(`🎯 Artículos procesados y filtrados: ${processedArticles.length}`)
               allArticles.push(...processedArticles)
             }
+          } else {
+            const errorData = await response.json()
+            console.error(`❌ Error en NewsAPI para "${search.label}":`, errorData)
           }
         } catch (error) {
-          console.error(`Error fetching news for query "${query}":`, error)
+          console.error(`❌ Error fetching news for "${search.label}":`, error)
         }
       }
     }
     
     // Si no hay artículos o no hay API key, usar datos de ejemplo
     if (allArticles.length === 0) {
+      console.log('⚠️ No se obtuvieron artículos, usando datos de ejemplo')
       allArticles.push(
         {
           title: 'La UE aprueba la Ley de Inteligencia Artificial',
@@ -170,6 +244,8 @@ export async function GET(request: Request) {
     const sortedArticles = uniqueArticles
       .sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime())
       .slice(0, 6)
+    
+    console.log(`✨ Devolviendo ${sortedArticles.length} noticias`)
     
     return NextResponse.json({ articles: sortedArticles })
     

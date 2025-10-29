@@ -10,6 +10,77 @@ interface NewsArticle {
   url: string
   publishedAt: string
   source: string
+  originalLanguage?: string
+}
+
+// Función para traducir texto usando MyMemory API (gratuita, 1000 palabras/día sin key)
+async function translateText(text: string, targetLang: string = 'es'): Promise<string> {
+  try {
+    // Detectar si el texto ya está en español
+    if (!text || text.trim().length === 0) return text
+    
+    // Limitar longitud del texto a traducir para no superar límites
+    const textToTranslate = text.length > 500 ? text.substring(0, 497) + '...' : text
+    
+    // Usar MyMemory API - GRATUITA sin registro
+    // Límite: 1000 palabras/día sin API key, 10000 con email
+    const response = await fetch(
+      `https://api.mymemory.translated.net/get?q=${encodeURIComponent(textToTranslate)}&langpair=en|${targetLang}`,
+      { 
+        next: { revalidate: 3600 },
+        signal: AbortSignal.timeout(3000) // Timeout de 3 segundos
+      }
+    )
+    
+    if (response.ok) {
+      const data = await response.json()
+      if (data.responseStatus === 200 && data.responseData?.translatedText) {
+        return data.responseData.translatedText
+      }
+    }
+    
+    return text
+  } catch (error) {
+    console.warn('Error traduciendo texto, usando original:', error)
+    return text // Devolver texto original si falla
+  }
+}
+
+// Función para traducir una noticia completa
+async function translateArticle(article: any, targetLang: string = 'es'): Promise<NewsArticle> {
+  // Detectar idioma del artículo (aproximado)
+  const titleWords = article.title.toLowerCase().split(' ')
+  const spanishWords = ['el', 'la', 'los', 'las', 'de', 'del', 'en', 'con', 'por', 'para', 'una', 'uno']
+  const hasSpanishWords = titleWords.some((word: string) => spanishWords.includes(word))
+  
+  // Si detectamos español, no traducir
+  if (hasSpanishWords) {
+    return {
+      title: article.title,
+      summary: generateSummary(article.description || article.content || ''),
+      category: categorizeNews(article.title, article.description || ''),
+      url: article.url,
+      publishedAt: article.publishedAt,
+      source: article.source.name,
+      originalLanguage: 'es'
+    }
+  }
+  
+  // Si es inglés u otro idioma, traducir título y descripción
+  const [translatedTitle, translatedDesc] = await Promise.all([
+    translateText(article.title, targetLang),
+    translateText(article.description || '', targetLang)
+  ])
+  
+  return {
+    title: translatedTitle,
+    summary: generateSummary(translatedDesc),
+    category: categorizeNews(translatedTitle, translatedDesc),
+    url: article.url,
+    publishedAt: article.publishedAt,
+    source: article.source.name,
+    originalLanguage: 'en'
+  }
 }
 
 // Categorías predefinidas para IA
@@ -93,92 +164,160 @@ function generateSummary(description: string): string {
     : summary + '.'
 }
 
+// Función para parsear RSS/Atom feeds
+async function parseRSSFeed(url: string, sourceName: string): Promise<any[]> {
+  try {
+    const response = await fetch(url, {
+      next: { revalidate: 3600 },
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (compatible; RegulacionIA/1.0)'
+      }
+    })
+    
+    if (!response.ok) return []
+    
+    const xmlText = await response.text()
+    
+    // Parse XML simple (buscar items/entries)
+    const items: any[] = []
+    
+    // Detectar si es RSS o Atom
+    const isAtom = xmlText.includes('<feed') || xmlText.includes('xmlns="http://www.w3.org/2005/Atom"')
+    
+    if (isAtom) {
+      // Parse Atom feed
+      const entryRegex = /<entry>([\s\S]*?)<\/entry>/g
+      let match
+      while ((match = entryRegex.exec(xmlText)) !== null) {
+        const entry = match[1]
+        if (!entry) continue
+        
+        const titleMatch = entry.match(/<title[^>]*>([\s\S]*?)<\/title>/)
+        const title = titleMatch?.[1]?.replace(/<!\[CDATA\[([\s\S]*?)\]\]>/, '$1').trim()
+        
+        const linkMatch1 = entry.match(/<link[^>]*href=["'](.*?)["']/)
+        const linkMatch2 = entry.match(/<link>(.*?)<\/link>/)
+        const link = linkMatch1?.[1] || linkMatch2?.[1]
+        
+        const summaryMatch = entry.match(/<summary[^>]*>([\s\S]*?)<\/summary>/)
+        const summary = summaryMatch?.[1]?.replace(/<!\[CDATA\[([\s\S]*?)\]\]>/, '$1').replace(/<[^>]+>/g, '').trim()
+        
+        const contentMatch = entry.match(/<content[^>]*>([\s\S]*?)<\/content>/)
+        const content = contentMatch?.[1]?.replace(/<!\[CDATA\[([\s\S]*?)\]\]>/, '$1').replace(/<[^>]+>/g, '').trim()
+        
+        const publishedMatch = entry.match(/<published>(.*?)<\/published>/)
+        const updatedMatch = entry.match(/<updated>(.*?)<\/updated>/)
+        const published = publishedMatch?.[1] || updatedMatch?.[1]
+        
+        if (title && link) {
+          items.push({
+            title: title.replace(/<[^>]+>/g, ''),
+            url: link,
+            description: summary || content || '',
+            publishedAt: published || new Date().toISOString(),
+            source: { name: sourceName }
+          })
+        }
+      }
+    } else {
+      // Parse RSS feed
+      const itemRegex = /<item>([\s\S]*?)<\/item>/g
+      let match
+      while ((match = itemRegex.exec(xmlText)) !== null) {
+        const item = match[1]
+        if (!item) continue
+        
+        const titleMatch = item.match(/<title>([\s\S]*?)<\/title>/)
+        const title = titleMatch?.[1]?.replace(/<!\[CDATA\[([\s\S]*?)\]\]>/, '$1').trim()
+        
+        const linkMatch = item.match(/<link>([\s\S]*?)<\/link>/)
+        const link = linkMatch?.[1]?.trim()
+        
+        const descMatch = item.match(/<description>([\s\S]*?)<\/description>/)
+        const description = descMatch?.[1]?.replace(/<!\[CDATA\[([\s\S]*?)\]\]>/, '$1').replace(/<[^>]+>/g, '').trim()
+        
+        const pubDateMatch = item.match(/<pubDate>(.*?)<\/pubDate>/)
+        const dcDateMatch = item.match(/<dc:date>(.*?)<\/dc:date>/)
+        const pubDate = pubDateMatch?.[1] || dcDateMatch?.[1]
+        
+        if (title && link) {
+          items.push({
+            title: title.replace(/<[^>]+>/g, ''),
+            url: link,
+            description: description || '',
+            publishedAt: pubDate || new Date().toISOString(),
+            source: { name: sourceName }
+          })
+        }
+      }
+    }
+    
+    return items
+  } catch (error) {
+    console.error(`Error parsing RSS feed ${sourceName}:`, error)
+    return []
+  }
+}
+
 export async function GET(request: Request) {
   try {
-    // Usar NewsAPI (necesitarás registrarte en https://newsapi.org para obtener una API key)
-    // Alternativa gratuita: usar RSS feeds o APIs públicas
+    console.log('📰 Obteniendo noticias de medios españoles...')
     
-    const NEWS_API_KEY = process.env.NEWS_API_KEY || ''
-    
-    console.log('🔑 API Key detectada:', NEWS_API_KEY ? `Sí (${NEWS_API_KEY.substring(0, 8)}...)` : 'No')
-    
-    // Estrategia mixta: usar top-headlines que funciona mejor con plan gratuito
-    // y filtrar por términos de IA
-    const searches = [
-      {
-        type: 'top-headlines',
-        params: 'category=technology&language=en',
-        label: 'Tech headlines (EN)'
-      },
-      {
-        type: 'everything',
-        params: 'q=artificial+intelligence&language=en&sortBy=publishedAt',
-        label: 'AI news (EN)'
-      },
-      {
-        type: 'everything', 
-        params: 'q=inteligencia+artificial&language=es&sortBy=publishedAt',
-        label: 'AI news (ES)'
-      }
+    // RSS feeds de medios españoles de calidad
+    const rssFeeds = [
+      { url: 'https://feeds.elpais.com/mrss-s/pages/ep/site/elpais.com/section/tecnologia/portada', name: 'El País' },
+      { url: 'https://e00-elmundo.uecdn.es/elmundo/rss/tecnologia.xml', name: 'El Mundo' },
+      { url: 'https://www.abc.es/rss/feeds/abc_tecnologia.xml', name: 'ABC' },
+      { url: 'https://www.expansion.com/rss/tecnologia.xml', name: 'Expansión' },
+      { url: 'https://www.xataka.com/index.xml', name: 'Xataka' },
+      { url: 'https://www.genbeta.com/index.xml', name: 'Genbeta' },
+      { url: 'https://www.elespanol.com/rss/omicrono/', name: 'El Español' },
+      { url: 'https://hipertextual.com/feed', name: 'Hipertextual' },
+      { url: 'https://www.muyinteresante.es/feed/', name: 'Muy Interesante' },
+      { url: 'https://www.larazon.es/rss/tecnologia.xml', name: 'La Razón' }
     ]
     
     const allArticles: NewsArticle[] = []
     
-    // Si tienes NEWS_API_KEY configurada
-    if (NEWS_API_KEY && NEWS_API_KEY !== '') {
-      console.log('📰 Intentando obtener noticias de NewsAPI...')
+    // Obtener noticias de todos los RSS feeds en paralelo
+    console.log(`🔍 Consultando ${rssFeeds.length} medios españoles...`)
+    
+    const feedResults = await Promise.allSettled(
+      rssFeeds.map(feed => parseRSSFeed(feed.url, feed.name))
+    )
+    
+    // Procesar resultados
+    feedResults.forEach((result, i) => {
+      const feed = rssFeeds[i]
+      if (!feed) return
       
-      for (const search of searches) {
-        try {
-          const response = await fetch(
-            `https://newsapi.org/v2/${search.type}?${search.params}&pageSize=20&apiKey=${NEWS_API_KEY}`,
-            { 
-              next: { revalidate: 3600 },
-              cache: 'no-store' // Evitar cache para debugging
-            }
-          )
-          
-          console.log(`🔍 ${search.label} - Status: ${response.status}`)
-          
-          if (response.ok) {
-            const data = await response.json()
-            
-            console.log(`✅ Artículos obtenidos para "${search.label}":`, data.articles?.length || 0)
-            
-            if (data.articles) {
-              const processedArticles = data.articles
-                .filter((article: any) => {
-                  if (!article.title || !article.url || article.title.includes('[Removed]')) return false
-                  
-                  // Si es de tech headlines, filtrar solo las relacionadas con IA
-                  if (search.type === 'top-headlines') {
-                    const text = `${article.title} ${article.description || ''}`.toLowerCase()
-                    return text.match(/\b(ai|artificial intelligence|machine learning|chatgpt|openai|deepmind|neural network|llm|gpt|claude|gemini)\b/i)
-                  }
-                  
-                  return true
-                })
-                .map((article: any) => ({
-                  title: article.title,
-                  summary: generateSummary(article.description || article.content || ''),
-                  category: categorizeNews(article.title, article.description || ''),
-                  url: article.url,
-                  publishedAt: article.publishedAt,
-                  source: article.source.name
-                }))
-              
-              console.log(`🎯 Artículos procesados y filtrados: ${processedArticles.length}`)
-              allArticles.push(...processedArticles)
-            }
-          } else {
-            const errorData = await response.json()
-            console.error(`❌ Error en NewsAPI para "${search.label}":`, errorData)
-          }
-        } catch (error) {
-          console.error(`❌ Error fetching news for "${search.label}":`, error)
-        }
+      if (result.status === 'fulfilled' && result.value && result.value.length > 0) {
+        console.log(`✅ ${feed.name}: ${result.value.length} artículos`)
+        
+        // Filtrar solo artículos relacionados con IA
+        const aiArticles = result.value.filter((article: any) => {
+          const text = `${article.title} ${article.description}`.toLowerCase()
+          return text.match(/\b(inteligencia artificial|ia|ai|chatgpt|openai|deepmind|machine learning|deep learning|algoritmo|neural|gpt|claude|gemini|copilot|bard|llm|transformers)\b/i)
+        })
+        
+        console.log(`🎯 ${feed.name}: ${aiArticles.length} artículos sobre IA`)
+        
+        // Procesar artículos
+        const processedArticles = aiArticles.map((article: any) => ({
+          title: article.title,
+          summary: generateSummary(article.description),
+          category: categorizeNews(article.title, article.description),
+          url: article.url,
+          publishedAt: article.publishedAt,
+          source: article.source.name,
+          originalLanguage: 'es'
+        }))
+        
+        allArticles.push(...processedArticles)
+      } else {
+        console.warn(`⚠️ ${feed.name}: No se pudieron obtener artículos`)
       }
-    }
+    })
     
     // Si no hay artículos o no hay API key, usar datos de ejemplo
     if (allArticles.length === 0) {
@@ -240,12 +379,30 @@ export async function GET(request: Request) {
       new Map(allArticles.map(article => [article.title, article])).values()
     )
     
-    // Ordenar por fecha y limitar a 6 noticias
-    const sortedArticles = uniqueArticles
+    console.log(`📊 Total artículos únicos: ${uniqueArticles.length}`)
+    
+    // Separar por idioma
+    const spanishArticles = uniqueArticles.filter(a => a.originalLanguage === 'es')
+    const englishArticles = uniqueArticles.filter(a => a.originalLanguage === 'en')
+    
+    console.log(`🇪🇸 Artículos en español: ${spanishArticles.length}`)
+    console.log(`🇬🇧 Artículos en inglés: ${englishArticles.length}`)
+    
+    // Priorizar contenido en español: tomar 4 en español + 2 en inglés
+    const selectedSpanish = spanishArticles
+      .sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime())
+      .slice(0, 4)
+    
+    const selectedEnglish = englishArticles
+      .sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime())
+      .slice(0, 2)
+    
+    // Combinar y ordenar por fecha
+    const sortedArticles = [...selectedSpanish, ...selectedEnglish]
       .sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime())
       .slice(0, 6)
     
-    console.log(`✨ Devolviendo ${sortedArticles.length} noticias`)
+    console.log(`✨ Devolviendo ${sortedArticles.length} noticias (${selectedSpanish.length} ES + ${selectedEnglish.length} EN)`)
     
     return NextResponse.json({ articles: sortedArticles })
     

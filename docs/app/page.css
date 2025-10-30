@@ -40,8 +40,11 @@
   line-height: 1.6;
 }
 #docs-card {
-  color: #fff;
+  color: #000;
   text-shadow: 0 0 1rem rgba(0, 0, 0, 0.1);
+}
+.dark #docs-card {
+  color: #fff;
 }
 
 #docs-card img {
@@ -188,4 +191,9 @@
   .dark #search-card video {
     mix-blend-mode: lighten;
   }
+}
+
+.form-field-focus:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 2px #0070f3;
 }

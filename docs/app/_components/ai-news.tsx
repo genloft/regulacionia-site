@@ -103,7 +103,7 @@ export const AINews: FC = () => {
           href={article.url}
           target="_blank"
           rel="noopener noreferrer"
-          className="group block p-4 rounded-lg border border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600 hover:shadow-lg transition-all duration-200 bg-white dark:bg-gray-800/50 hover:scale-[1.02]"
+          className="group block p-4 rounded-lg transition-all duration-200 hover:scale-[1.02] bg-black/[.05] dark:bg-gray-50/10"
         >
           <div className="flex items-start justify-between gap-2 mb-2">
             <span className={`inline-block px-2.5 py-1 text-xs font-semibold rounded-full border ${getCategoryColor(article.category)}`}>

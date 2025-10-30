@@ -97,19 +97,19 @@ const IndexPage: FC = () => {
               <p>
                 Si estás interesado en formar parte de la asociación o simplemente quieres mantenerte informado, déjanos tus datos.
               </p>
-              <form onSubmit={handleSubmit} className="mt-6 w-full max-w-lg text-left">
+              <form onSubmit={handleSubmit} className="contact-form mt-6 w-full max-w-lg text-left">
                 <div className="flex flex-wrap -mx-3 mb-4">
                   <div className="w-full md:w-1/2 px-3 mb-4 md:mb-0">
                     <label className="block uppercase tracking-wide text-xs font-bold mb-2" htmlFor="grid-first-name">
                       Nombre
                     </label>
-                    <input name="nombre" required className="appearance-none block w-full bg-gray-100 dark:bg-gray-800 border rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white dark:focus:bg-gray-700" id="grid-first-name" type="text" placeholder="Jane" />
+                    <input name="nombre" required className="appearance-none block w-full rounded-lg px-3 py-2 bg-black/[.05] dark:bg-gray-50/10 placeholder:text-gray-600 dark:placeholder:text-gray-400 focus:bg-white dark:focus:bg-gray-700 form-field-focus" id="grid-first-name" type="text" placeholder="Jane" />
                   </div>
                   <div className="w-full md:w-1/2 px-3">
                     <label className="block uppercase tracking-wide text-xs font-bold mb-2" htmlFor="grid-email">
                       Mail
                     </label>
-                    <input name="mail" required className="appearance-none block w-full bg-gray-100 dark:bg-gray-800 border rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white dark:focus:bg-gray-700" id="grid-email" type="email" placeholder="jane.doe@email.com" />
+                    <input name="mail" required className="appearance-none block w-full rounded-lg px-3 py-2 bg-black/[.05] dark:bg-gray-50/10 placeholder:text-gray-600 dark:placeholder:text-gray-400 focus:bg-white dark:focus:bg-gray-700 form-field-focus" id="grid-email" type="email" placeholder="jane.doe@email.com" />
                   </div>
                 </div>
                 <div className="flex flex-wrap -mx-3 mb-4">
@@ -118,7 +118,7 @@ const IndexPage: FC = () => {
                       Tu interés en la IA
                     </label>
                     <div className="relative">
-                      <select name="interes" required className="block appearance-none w-full bg-gray-100 dark:bg-gray-800 border px-4 py-3 pr-8 rounded leading-tight focus:outline-none focus:bg-white dark:focus:bg-gray-700" id="grid-state">
+                      <select name="interes" required className="block appearance-none w-full rounded-lg px-3 py-2 bg-black/[.05] dark:bg-gray-50/10 placeholder:text-gray-600 dark:placeholder:text-gray-400 focus:bg-white dark:focus:bg-gray-700 form-field-focus" id="grid-state">
                         <option>Desarrollo sobre IA</option>
                         <option>Trabajo con IA</option>
                         <option>Solo estoy interesado en IA</option>
@@ -131,7 +131,7 @@ const IndexPage: FC = () => {
                     <label className="block uppercase tracking-wide text-xs font-bold mb-2" htmlFor="grid-message">
                       ¿Quieres añadir algo más?
                     </label>
-                    <textarea name="mensaje" className="appearance-none block w-full bg-gray-100 dark:bg-gray-800 border rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white dark:focus:bg-gray-700 h-24 resize-none" id="grid-message"></textarea>
+                    <textarea name="mensaje" className="appearance-none block w-full rounded-lg px-3 py-2 bg-black/[.05] dark:bg-gray-50/10 placeholder:text-gray-600 dark:placeholder:text-gray-400 focus:bg-white dark:focus:bg-gray-700 form-field-focus h-24 resize-none" id="grid-message"></textarea>
                   </div>
                 </div>
                 <div className="flex items-center gap-4">

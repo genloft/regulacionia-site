@@ -23,7 +23,7 @@ export async function POST(request: Request) {
     const data = await request.json()
 
     // Define la ruta donde se guardará el archivo JSON
-    const filePath = path.join(process.cwd(), 'docs', 'data', 'submissions.json')
+    const filePath = path.join('/tmp', 'submissions.json')
     const dirPath = path.dirname(filePath)
 
     // Asegura que el directorio 'data' exista

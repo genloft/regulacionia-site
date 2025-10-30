@@ -9,6 +9,7 @@ import { Feature, Features } from './_components/features'
 import { MotionDiv, MotionH3 } from './_components/framer-motion'
 import { I18n } from './_components/i18n-demo'
 import { AINews } from './_components/ai-news'
+import { CustomSelect } from './_components/custom-select'
 import styles from './page.module.css'
 import './page.css'
 import type { FC, FormEvent } from 'react'
@@ -117,13 +118,16 @@ const IndexPage: FC = () => {
                     <label className="block uppercase tracking-wide text-xs font-bold mb-2" htmlFor="grid-state">
                       Tu interés en la IA
                     </label>
-                    <div className="relative">
-                      <select name="interes" required className="block appearance-none w-full rounded-lg px-3 py-2 bg-black/[.05] dark:bg-gray-50/10 placeholder:text-gray-600 dark:placeholder:text-gray-400 focus:bg-white dark:focus:bg-gray-700 form-field-focus" id="grid-state">
-                        <option>Desarrollo sobre IA</option>
-                        <option>Trabajo con IA</option>
-                        <option>Solo estoy interesado en IA</option>
-                      </select>
-                    </div>
+                    <CustomSelect
+                      name="interes"
+                      id="grid-state"
+                      required
+                      options={[
+                        'Desarrollo sobre IA',
+                        'Trabajo con IA',
+                        'Solo estoy interesado en IA'
+                      ]}
+                    />
                   </div>
                 </div>
                 <div className="flex flex-wrap -mx-3 mb-2">

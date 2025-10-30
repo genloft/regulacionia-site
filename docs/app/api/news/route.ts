@@ -171,10 +171,17 @@ async function parseRSSFeed(url: string, sourceName: string): Promise<any[]> {
       next: { revalidate: 3600 },
       headers: {
         'User-Agent': 'Mozilla/5.0 (compatible; RegulacionIA/1.0)'
-      }
+      },
+      // @ts-ignore - Node.js specific option for handling SSL certificates
+      ...(process.env.NODE_ENV === 'development' && { 
+        agent: undefined 
+      })
     })
     
-    if (!response.ok) return []
+    if (!response.ok) {
+      console.warn(`⚠️ ${sourceName}: HTTP ${response.status}`)
+      return []
+    }
     
     const xmlText = await response.text()
     
@@ -277,12 +284,13 @@ export async function GET(request: Request) {
       { url: 'https://www.xataka.com/index.xml', name: 'Xataka' },
       { url: 'https://www.genbeta.com/index.xml', name: 'Genbeta' },
       { url: 'https://hipertextual.com/feed', name: 'Hipertextual' },
-      { url: 'https://www.muyinteresante.es/feed/', name: 'Muy Interesante' },
+      // { url: 'https://www.muyinteresante.es/feed/', name: 'Muy Interesante' }, // Temporal: certificado SSL problemático
       
       // Fuentes adicionales con más contenido
       { url: 'https://www.elconfidencial.com/rss/tecnologia/', name: 'El Confidencial' },
       { url: 'https://computerhoy.com/rss', name: 'Computer Hoy' },
-      { url: 'https://www.europapress.es/rss/rss.aspx?ch=434', name: 'Europa Press Tech' }
+      { url: 'https://www.europapress.es/rss/rss.aspx?ch=434', name: 'Europa Press Tech' },
+      { url: 'https://www.20minutos.es/rss/tecnologia/', name: '20 Minutos Tech' }
     ]
     
     const allArticles: NewsArticle[] = []

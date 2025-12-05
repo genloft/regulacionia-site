@@ -111,7 +111,7 @@ export default {
   },
   docs: {
     type: 'page',
-    title: 'Documentation',
+    title: 'Documentations',
     items: {
       index: '',
       'file-conventions': { items: FILE_CONVENTIONS },

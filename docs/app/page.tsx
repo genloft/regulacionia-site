@@ -88,7 +88,7 @@ const IndexPage: FC = () => {
             >
               <div className="relative w-full h-full flex flex-col">
                 <h3 className="text-2xl font-bold mb-4 text-center">
-                  Últimas Noticias de IA
+                  Últimas noticias sobre la IA
                 </h3>
                 <AINews />
               </div>
@@ -96,7 +96,7 @@ const IndexPage: FC = () => {
             <Feature index={1} centered className="prose dark:prose-invert">
               <h3>Únete a la comunidad</h3>
               <p>
-                Si estás interesado en formar parte de la asociación o simplemente quieres mantenerte informado, déjanos tus datos.
+                Si estás interesado en formar parte de este proyecto o solo quieres mantenerte informado.
               </p>
               <form onSubmit={handleSubmit} className="contact-form mt-6 w-full max-w-lg text-left">
                 <div className="flex flex-wrap -mx-3 mb-4">
@@ -152,22 +152,20 @@ const IndexPage: FC = () => {
               href="/docs/guide/syntax-highlighting"
             >
               <h3>
-                Advanced syntax <br className="show-on-mobile" />
-                highlighting solution
+                Personas<br className="show-on-mobile" />
+                y Ciudadanía
               </h3>
               <p>
-                Performant and reliable build-time syntax highlighting powered
-                by <Link href="https://shiki.style">Shiki</Link>.
+                Entiende qué hace la IA contigo y cómo proteger tus derechos.
               </p>
             </Feature>
-            <Feature index={3} href="/docs/guide/i18n">
+            <Feature index={3} href="/docs/guiden e/i18n">
               <h3>
-                I18n as easy as <br className="show-on-mobile" />
-                creating new files
+                Empresas <br className="show-on-mobile" />
+                y pymes
               </h3>
               <p className="mb-4">
-                Place your page files in folders specific to each locale, Nextra
-                and Next.js will handle the rest for you.
+                Usa IA de forma segura y alineada con la regulación sin frenar tu innovación.
               </p>
               <I18n />
             </Feature>

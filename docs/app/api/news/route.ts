@@ -18,27 +18,27 @@ async function translateText(text: string, targetLang: string = 'es'): Promise<s
   try {
     // Detectar si el texto ya está en español
     if (!text || text.trim().length === 0) return text
-    
+
     // Limitar longitud del texto a traducir para no superar límites
     const textToTranslate = text.length > 500 ? text.substring(0, 497) + '...' : text
-    
+
     // Usar MyMemory API - GRATUITA sin registro
     // Límite: 1000 palabras/día sin API key, 10000 con email
     const response = await fetch(
       `https://api.mymemory.translated.net/get?q=${encodeURIComponent(textToTranslate)}&langpair=en|${targetLang}`,
-      { 
+      {
         next: { revalidate: 3600 },
         signal: AbortSignal.timeout(3000) // Timeout de 3 segundos
       }
     )
-    
+
     if (response.ok) {
       const data = await response.json()
       if (data.responseStatus === 200 && data.responseData?.translatedText) {
         return data.responseData.translatedText
       }
     }
-    
+
     return text
   } catch (error) {
     console.warn('Error traduciendo texto, usando original:', error)
@@ -52,7 +52,7 @@ async function translateArticle(article: any, targetLang: string = 'es'): Promis
   const titleWords = article.title.toLowerCase().split(' ')
   const spanishWords = ['el', 'la', 'los', 'las', 'de', 'del', 'en', 'con', 'por', 'para', 'una', 'uno']
   const hasSpanishWords = titleWords.some((word: string) => spanishWords.includes(word))
-  
+
   // Si detectamos español, no traducir
   if (hasSpanishWords) {
     return {
@@ -65,13 +65,13 @@ async function translateArticle(article: any, targetLang: string = 'es'): Promis
       originalLanguage: 'es'
     }
   }
-  
+
   // Si es inglés u otro idioma, traducir título y descripción
   const [translatedTitle, translatedDesc] = await Promise.all([
     translateText(article.title, targetLang),
     translateText(article.description || '', targetLang)
   ])
-  
+
   return {
     title: translatedTitle,
     summary: generateSummary(translatedDesc),
@@ -99,7 +99,7 @@ const AI_CATEGORIES = {
 // Función para categorizar noticias basándose en palabras clave con priorización
 function categorizeNews(title: string, description: string): string {
   const text = `${title} ${description}`.toLowerCase()
-  
+
   // Array de categorías con sus patrones, ordenadas por especificidad
   const categories = [
     {
@@ -139,14 +139,14 @@ function categorizeNews(title: string, description: string): string {
       pattern: /\b(tecnología|tecnologia|tech|software|hardware|algorithm|modelo|neural|deep learning|machine learning|chatgpt|gpt|llm|api|cloud|data)\b/i
     }
   ]
-  
+
   // Buscar la primera categoría que coincida
   for (const category of categories) {
     if (category.pattern.test(text)) {
       return category.name
     }
   }
-  
+
   // Si no coincide con ninguna, por defecto Tecnología
   return AI_CATEGORIES.TECHNOLOGY
 }
@@ -154,13 +154,13 @@ function categorizeNews(title: string, description: string): string {
 // Función para resumir texto (simplificada)
 function generateSummary(description: string): string {
   if (!description) return 'Resumen no disponible'
-  
+
   // Limitar a las primeras 2-3 oraciones
   const sentences = description.split(/[.!?]+/).filter(s => s.trim().length > 0)
   const summary = sentences.slice(0, 2).join('. ').trim()
-  
-  return summary.length > 150 
-    ? summary.substring(0, 147) + '...' 
+
+  return summary.length > 150
+    ? summary.substring(0, 147) + '...'
     : summary + '.'
 }
 
@@ -173,24 +173,24 @@ async function parseRSSFeed(url: string, sourceName: string): Promise<any[]> {
         'User-Agent': 'Mozilla/5.0 (compatible; RegulacionIA/1.0)'
       },
       // @ts-ignore - Node.js specific option for handling SSL certificates
-      ...(process.env.NODE_ENV === 'development' && { 
-        agent: undefined 
+      ...(process.env.NODE_ENV === 'development' && {
+        agent: undefined
       })
     })
-    
+
     if (!response.ok) {
       console.warn(`⚠️ ${sourceName}: HTTP ${response.status}`)
       return []
     }
-    
+
     const xmlText = await response.text()
-    
+
     // Parse XML simple (buscar items/entries)
     const items: any[] = []
-    
+
     // Detectar si es RSS o Atom
     const isAtom = xmlText.includes('<feed') || xmlText.includes('xmlns="http://www.w3.org/2005/Atom"')
-    
+
     if (isAtom) {
       // Parse Atom feed
       const entryRegex = /<entry>([\s\S]*?)<\/entry>/g
@@ -198,24 +198,24 @@ async function parseRSSFeed(url: string, sourceName: string): Promise<any[]> {
       while ((match = entryRegex.exec(xmlText)) !== null) {
         const entry = match[1]
         if (!entry) continue
-        
+
         const titleMatch = entry.match(/<title[^>]*>([\s\S]*?)<\/title>/)
         const title = titleMatch?.[1]?.replace(/<!\[CDATA\[([\s\S]*?)\]\]>/, '$1').trim()
-        
+
         const linkMatch1 = entry.match(/<link[^>]*href=["'](.*?)["']/)
         const linkMatch2 = entry.match(/<link>(.*?)<\/link>/)
         const link = linkMatch1?.[1] || linkMatch2?.[1]
-        
+
         const summaryMatch = entry.match(/<summary[^>]*>([\s\S]*?)<\/summary>/)
         const summary = summaryMatch?.[1]?.replace(/<!\[CDATA\[([\s\S]*?)\]\]>/, '$1').replace(/<[^>]+>/g, '').trim()
-        
+
         const contentMatch = entry.match(/<content[^>]*>([\s\S]*?)<\/content>/)
         const content = contentMatch?.[1]?.replace(/<!\[CDATA\[([\s\S]*?)\]\]>/, '$1').replace(/<[^>]+>/g, '').trim()
-        
+
         const publishedMatch = entry.match(/<published>(.*?)<\/published>/)
         const updatedMatch = entry.match(/<updated>(.*?)<\/updated>/)
         const published = publishedMatch?.[1] || updatedMatch?.[1]
-        
+
         if (title && link) {
           items.push({
             title: title.replace(/<[^>]+>/g, ''),
@@ -233,20 +233,20 @@ async function parseRSSFeed(url: string, sourceName: string): Promise<any[]> {
       while ((match = itemRegex.exec(xmlText)) !== null) {
         const item = match[1]
         if (!item) continue
-        
+
         const titleMatch = item.match(/<title>([\s\S]*?)<\/title>/)
         const title = titleMatch?.[1]?.replace(/<!\[CDATA\[([\s\S]*?)\]\]>/, '$1').trim()
-        
+
         const linkMatch = item.match(/<link>([\s\S]*?)<\/link>/)
         const link = linkMatch?.[1]?.trim()
-        
+
         const descMatch = item.match(/<description>([\s\S]*?)<\/description>/)
         const description = descMatch?.[1]?.replace(/<!\[CDATA\[([\s\S]*?)\]\]>/, '$1').replace(/<[^>]+>/g, '').trim()
-        
+
         const pubDateMatch = item.match(/<pubDate>(.*?)<\/pubDate>/)
         const dcDateMatch = item.match(/<dc:date>(.*?)<\/dc:date>/)
         const pubDate = pubDateMatch?.[1] || dcDateMatch?.[1]
-        
+
         if (title && link) {
           items.push({
             title: title.replace(/<[^>]+>/g, ''),
@@ -258,7 +258,7 @@ async function parseRSSFeed(url: string, sourceName: string): Promise<any[]> {
         }
       }
     }
-    
+
     return items
   } catch (error) {
     console.error(`Error parsing RSS feed ${sourceName}:`, error)
@@ -269,7 +269,7 @@ async function parseRSSFeed(url: string, sourceName: string): Promise<any[]> {
 export async function GET(request: Request) {
   try {
     console.log('📰 Obteniendo noticias de medios españoles...')
-    
+
     // RSS feeds de medios españoles de calidad + fuentes internacionales en español
     const rssFeeds = [
       // Medios españoles generales
@@ -279,37 +279,55 @@ export async function GET(request: Request) {
       { url: 'https://www.expansion.com/rss/tecnologia.xml', name: 'Expansión' },
       { url: 'https://www.larazon.es/rss/tecnologia.xml', name: 'La Razón' },
       { url: 'https://www.elespanol.com/rss/omicrono/', name: 'El Español' },
-      
+      { url: 'https://www.lavanguardia.com/rss/tecnologia.xml', name: 'La Vanguardia' },
+      { url: 'https://www.eldiario.es/rss/tecnologia/', name: 'El Diario' },
+      { url: 'https://cincodias.elpais.com/seccion/rss/companias/', name: 'Cinco Días' },
+
       // Medios especializados en tecnología (más IA)
       { url: 'https://www.xataka.com/index.xml', name: 'Xataka' },
       { url: 'https://www.genbeta.com/index.xml', name: 'Genbeta' },
       { url: 'https://hipertextual.com/feed', name: 'Hipertextual' },
+      { url: 'https://www.emprendedores.es/feed/', name: 'Emprendedores' },
       // { url: 'https://www.muyinteresante.es/feed/', name: 'Muy Interesante' }, // Temporal: certificado SSL problemático
-      
+
       // Fuentes adicionales con más contenido
       { url: 'https://www.elconfidencial.com/rss/tecnologia/', name: 'El Confidencial' },
       { url: 'https://computerhoy.com/rss', name: 'Computer Hoy' },
       { url: 'https://www.europapress.es/rss/rss.aspx?ch=434', name: 'Europa Press Tech' },
-      { url: 'https://www.20minutos.es/rss/tecnologia/', name: '20 Minutos Tech' }
+      { url: 'https://www.20minutos.es/rss/tecnologia/', name: '20 Minutos Tech' },
+
+      // Fuentes Internacionales / Europeas (Inglés)
+      { url: 'https://techcrunch.com/category/artificial-intelligence/feed/', name: 'TechCrunch' },
+      { url: 'https://www.theverge.com/rss/ai/index.xml', name: 'The Verge' },
+      { url: 'https://www.wired.com/feed/tag/ai/latest/rss', name: 'Wired' },
+      { url: 'https://www.politico.eu/section/technology/feed/', name: 'Politico EU' },
+      { url: 'https://sifted.eu/feed', name: 'Sifted' },
+
+      // Nuevas Fuentes Internacionales Top Tier
+      { url: 'https://venturebeat.com/category/ai/feed/', name: 'VentureBeat' },
+      { url: 'https://www.technologyreview.com/feed/', name: 'MIT Tech Review' },
+      { url: 'https://arstechnica.com/tag/ai/feed/', name: 'Ars Technica' },
+      { url: 'https://www.zdnet.com/topic/artificial-intelligence/rss.xml', name: 'ZDNet' },
+      { url: 'https://spectrum.ieee.org/feeds/topic/artificial-intelligence', name: 'IEEE Spectrum' },
+      { url: 'https://thenextweb.com/topic/artificial-intelligence/feed', name: 'TNW' },
+      { url: 'https://www.artificialintelligence-news.com/feed/', name: 'AI News' }
     ]
-    
+
     const allArticles: NewsArticle[] = []
-    
+
     // Obtener noticias de todos los RSS feeds en paralelo
-    console.log(`🔍 Consultando ${rssFeeds.length} medios españoles...`)
-    
+    console.log(`🔍 Consultando ${rssFeeds.length} medios...`)
+
     const feedResults = await Promise.allSettled(
       rssFeeds.map(feed => parseRSSFeed(feed.url, feed.name))
     )
-    
+
     // Procesar resultados
     feedResults.forEach((result, i) => {
       const feed = rssFeeds[i]
       if (!feed) return
-      
+
       if (result.status === 'fulfilled' && result.value && result.value.length > 0) {
-        console.log(`✅ ${feed.name}: ${result.value.length} artículos`)
-        
         // Filtrar solo artículos ESTRICTAMENTE relacionados con IA
         const aiArticles = result.value.filter((article: any) => {
           const text = `${article.title} ${article.description}`.toLowerCase()
@@ -317,9 +335,7 @@ export async function GET(request: Request) {
           // Debe mencionar explícitamente IA, modelos de lenguaje, o tecnologías de IA específicas
           return text.match(/\b(inteligencia artificial|ia\b(?! de|s\b)|ai\b(?! de|s\b)|chatgpt|openai|deepmind|anthropic|machine learning|deep learning|red neuronal|redes neuronales|neural network|gpt-|gpt |claude|gemini|copilot|bard|llm|modelo de lenguaje|language model|generative|generativa|transformer|stable diffusion|midjourney|dall-e|dall·e)\b/i)
         })
-        
-        console.log(`🎯 ${feed.name}: ${aiArticles.length} artículos sobre IA`)
-        
+
         // Procesar artículos
         const processedArticles = aiArticles.map((article: any) => ({
           title: article.title,
@@ -328,15 +344,13 @@ export async function GET(request: Request) {
           url: article.url,
           publishedAt: article.publishedAt,
           source: article.source.name,
-          originalLanguage: 'es'
+          originalLanguage: ['El País', 'El Mundo', 'ABC', 'Expansión', 'La Razón', 'El Español', 'La Vanguardia', 'El Diario', 'Cinco Días', 'Xataka', 'Genbeta', 'Hipertextual', 'Emprendedores', 'El Confidencial', 'Computer Hoy', 'Europa Press Tech', '20 Minutos Tech'].includes(feed.name) ? 'es' : 'en'
         }))
-        
+
         allArticles.push(...processedArticles)
-      } else {
-        console.warn(`⚠️ ${feed.name}: No se pudieron obtener artículos`)
       }
     })
-    
+
     // Si no hay artículos o no hay API key, usar datos de ejemplo
     if (allArticles.length === 0) {
       console.log('⚠️ No se obtuvieron artículos, usando datos de ejemplo')
@@ -347,7 +361,8 @@ export async function GET(request: Request) {
           category: AI_CATEGORIES.REGULATION,
           url: 'https://www.europarl.europa.eu/news/es/headlines/society/20230601STO93804/ley-de-ia-de-la-ue-primera-regulacion-sobre-inteligencia-artificial',
           publishedAt: new Date(Date.now() - 3600000).toISOString(),
-          source: 'Parlamento Europeo'
+          source: 'Parlamento Europeo',
+          originalLanguage: 'es'
         },
         {
           title: 'Avances en IA ética y responsable en España',
@@ -355,7 +370,8 @@ export async function GET(request: Request) {
           category: AI_CATEGORIES.ETHICS,
           url: 'https://www.agenciasinc.es/',
           publishedAt: new Date(Date.now() - 86400000).toISOString(),
-          source: 'SINC'
+          source: 'SINC',
+          originalLanguage: 'es'
         },
         {
           title: 'España lidera investigación en procesamiento del lenguaje natural',
@@ -363,7 +379,8 @@ export async function GET(request: Request) {
           category: AI_CATEGORIES.RESEARCH,
           url: 'https://www.csic.es/',
           publishedAt: new Date(Date.now() - 172800000).toISOString(),
-          source: 'CSIC'
+          source: 'CSIC',
+          originalLanguage: 'es'
         },
         {
           title: 'Empresas españolas adoptan IA responsable',
@@ -371,7 +388,8 @@ export async function GET(request: Request) {
           category: AI_CATEGORIES.BUSINESS,
           url: 'https://www.expansion.com/',
           publishedAt: new Date(Date.now() - 259200000).toISOString(),
-          source: 'Expansión'
+          source: 'Expansión',
+          originalLanguage: 'es'
         },
         {
           title: 'Impacto de la IA en el mercado laboral español',
@@ -379,7 +397,8 @@ export async function GET(request: Request) {
           category: AI_CATEGORIES.SOCIETY,
           url: 'https://www.elpais.com/',
           publishedAt: new Date(Date.now() - 345600000).toISOString(),
-          source: 'El País'
+          source: 'El País',
+          originalLanguage: 'es'
         },
         {
           title: 'Nuevos modelos de IA multimodal revolucionan la industria',
@@ -387,46 +406,47 @@ export async function GET(request: Request) {
           category: AI_CATEGORIES.TECHNOLOGY,
           url: 'https://www.technologyreview.es/',
           publishedAt: new Date(Date.now() - 432000000).toISOString(),
-          source: 'MIT Technology Review'
+          source: 'MIT Technology Review',
+          originalLanguage: 'es'
         }
       )
     }
-    
+
     // Eliminar duplicados por título
     const uniqueArticles = Array.from(
       new Map(allArticles.map(article => [article.title, article])).values()
     )
-    
+
     console.log(`📊 Total artículos únicos: ${uniqueArticles.length}`)
-    
+
     // Separar por idioma
     const spanishArticles = uniqueArticles.filter(a => a.originalLanguage === 'es')
     const englishArticles = uniqueArticles.filter(a => a.originalLanguage === 'en')
-    
+
     console.log(`🇪🇸 Artículos en español: ${spanishArticles.length}`)
     console.log(`🇬🇧 Artículos en inglés: ${englishArticles.length}`)
-    
-    // Priorizar contenido en español: tomar hasta 10 artículos (8 español + 2 inglés)
+
+    // Priorizar contenido en español: tomar hasta 20 artículos (15 español + 5 inglés)
     const selectedSpanish = spanishArticles
       .sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime())
-      .slice(0, 8)
-    
+      .slice(0, 15)
+
     const selectedEnglish = englishArticles
       .sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime())
-      .slice(0, 2)
-    
-    // Combinar y ordenar por fecha, limitar a 10
+      .slice(0, 15)
+
+    // Combinar y ordenar por fecha, limitar a 20
     const sortedArticles = [...selectedSpanish, ...selectedEnglish]
       .sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime())
-      .slice(0, 10)
-    
+      .slice(0, 30)
+
     console.log(`✨ Devolviendo ${sortedArticles.length} noticias (${selectedSpanish.length} ES + ${selectedEnglish.length} EN)`)
-    
+
     return NextResponse.json({ articles: sortedArticles })
-    
+
   } catch (error) {
     console.error('Error fetching news:', error)
-    
+
     // Devolver datos de respaldo en caso de error
     return NextResponse.json({
       articles: [

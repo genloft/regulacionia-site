@@ -1,7 +1,8 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import type { FC } from 'react'
+import { motion } from 'framer-motion'
 
 interface NewsArticle {
   title: string
@@ -33,29 +34,37 @@ const formatDate = (dateString: string): string => {
   const diffMs = now.getTime() - date.getTime()
   const diffHours = Math.floor(diffMs / (1000 * 60 * 60))
   const diffDays = Math.floor(diffHours / 24)
-  
+
   if (diffHours < 1) return 'Hace menos de 1 hora'
   if (diffHours < 24) return `Hace ${diffHours} hora${diffHours > 1 ? 's' : ''}`
   if (diffDays < 7) return `Hace ${diffDays} día${diffDays > 1 ? 's' : ''}`
-  
-  return date.toLocaleDateString('es-ES', { 
-    year: 'numeric', 
-    month: 'short', 
-    day: 'numeric' 
+
+  return date.toLocaleDateString('es-ES', {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric'
   })
 }
 
 export const AINews: FC = () => {
   const [news, setNews] = useState<NewsArticle[]>([])
+  const [selectedSource, setSelectedSource] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
+
+  const newsContainerRef = useRef<HTMLDivElement>(null)
+  const sourcesContainerRef = useRef<HTMLDivElement>(null)
+
+  const isDragging = useRef(false)
+  const startX = useRef(0)
+  const scrollLeft = useRef(0)
 
   useEffect(() => {
     const fetchNews = async () => {
       try {
         const response = await fetch('/api/news')
         if (!response.ok) throw new Error('Failed to fetch news')
-        
+
         const data = await response.json()
         setNews(data.articles || [])
         setError(false)
@@ -70,11 +79,50 @@ export const AINews: FC = () => {
     fetchNews()
   }, [])
 
+  const handleMouseDown = (e: React.MouseEvent, ref: React.RefObject<HTMLDivElement | null>) => {
+    if (!ref.current) return
+    isDragging.current = true
+    startX.current = e.pageX - ref.current.offsetLeft
+    scrollLeft.current = ref.current.scrollLeft
+    ref.current.style.cursor = 'grabbing'
+    ref.current.style.userSelect = 'none'
+  }
+
+  const handleMouseLeave = (ref: React.RefObject<HTMLDivElement | null>) => {
+    if (!ref.current) return
+    isDragging.current = false
+    ref.current.style.cursor = 'grab'
+    ref.current.style.removeProperty('user-select')
+  }
+
+  const handleMouseUp = (ref: React.RefObject<HTMLDivElement | null>) => {
+    if (!ref.current) return
+    isDragging.current = false
+    ref.current.style.cursor = 'grab'
+    ref.current.style.removeProperty('user-select')
+  }
+
+  const handleMouseMove = (e: React.MouseEvent, ref: React.RefObject<HTMLDivElement | null>) => {
+    if (!isDragging.current || !ref.current) return
+    e.preventDefault()
+    const x = e.pageX - ref.current.offsetLeft
+    const walk = (x - startX.current) * 2 // Scroll-fast
+    ref.current.scrollLeft = scrollLeft.current - walk
+  }
+
+  const recentNewsCount = news.filter(article => {
+    const date = new Date(article.publishedAt)
+    const now = new Date()
+    const diffMs = now.getTime() - date.getTime()
+    const diffHours = diffMs / (1000 * 60 * 60)
+    return diffHours <= 48
+  }).length
+
   if (loading) {
     return (
-      <div className="flex flex-col gap-4 p-6">
+      <div className="flex gap-4 p-6 overflow-hidden w-full">
         {[1, 2, 3].map((i) => (
-          <div key={i} className="animate-pulse">
+          <div key={i} className="animate-pulse min-w-[300px]">
             <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/4 mb-3"></div>
             <div className="h-5 bg-gray-300 dark:bg-gray-600 rounded w-3/4 mb-3"></div>
             <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-full mb-2"></div>
@@ -95,43 +143,113 @@ export const AINews: FC = () => {
     )
   }
 
+  const uniqueSources = Array.from(new Set(news.map(article => article.source))).sort()
+
+  const filteredNews = selectedSource
+    ? news.filter(article => article.source === selectedSource)
+    : news
+
   return (
-    <div className="flex flex-col gap-4 overflow-y-auto max-h-[500px] p-4">
-      {news.map((article, index) => (
-        <a
-          key={index}
-          href={article.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="group block p-4 rounded-lg transition-all duration-200 hover:scale-[1.02] bg-black/[.05] dark:bg-gray-50/10"
+    <div className="flex flex-col gap-2 font-sans antialiased h-full w-full">
+      <div className="px-4 pt-2 flex justify-between items-center">
+        <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300 text-xs font-medium">
+          <span className="relative flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+          </span>
+          {recentNewsCount} noticias en las últimas 48h
+        </span>
+
+        {selectedSource && (
+          <button
+            onClick={() => setSelectedSource(null)}
+            className="text-xs text-blue-600 dark:text-blue-400 hover:underline"
+          >
+            Ver todas
+          </button>
+        )}
+      </div>
+
+      <div
+        ref={newsContainerRef}
+        className="flex gap-4 overflow-x-auto p-4 pb-4 snap-x w-full cursor-grab active:cursor-grabbing scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600"
+        onMouseDown={(e) => handleMouseDown(e, newsContainerRef)}
+        onMouseLeave={() => handleMouseLeave(newsContainerRef)}
+        onMouseUp={() => handleMouseUp(newsContainerRef)}
+        onMouseMove={(e) => handleMouseMove(e, newsContainerRef)}
+      >
+        {filteredNews.length > 0 ? (
+          filteredNews.map((article, index) => (
+            <a
+              key={index}
+              href={article.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex-none w-[300px] snap-center p-4 rounded-lg transition-all duration-200 hover:scale-[1.02] bg-black/[.05] dark:bg-gray-50/10 border border-transparent hover:border-gray-200 dark:hover:border-gray-700 select-none"
+              onDragStart={(e) => e.preventDefault()}
+            >
+              <div className="flex flex-col h-full pointer-events-none">
+                <div className="flex items-start justify-between gap-2 mb-2">
+                  <span className={`inline-block px-2.5 py-1 text-xs font-semibold rounded-full border ${getCategoryColor(article.category)}`}>
+                    {article.category}
+                  </span>
+                  <span className="text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap">
+                    {formatDate(article.publishedAt)}
+                  </span>
+                </div>
+
+                <h4 className="text-base font-semibold mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-2">
+                  {article.title}
+                </h4>
+
+                <p className="text-sm text-gray-600 dark:text-gray-300 mb-3 line-clamp-3 flex-grow">
+                  {article.summary}
+                </p>
+
+                <div className="flex items-center justify-between mt-auto">
+                  <span className="text-xs text-gray-500 dark:text-gray-400">
+                    Fuente: {article.source}
+                  </span>
+                  <span className="text-xs text-blue-600 dark:text-blue-400 group-hover:underline flex items-center gap-1">
+                    Leer más <span>→</span>
+                  </span>
+                </div>
+              </div>
+            </a>
+          ))
+        ) : (
+          <div className="w-full text-center py-8 text-gray-500">
+            No hay noticias disponibles para esta fuente.
+          </div>
+        )}
+      </div>
+
+      <div className="px-4 pb-4 border-t border-gray-100 dark:border-gray-800 pt-3">
+        <p className="text-xs text-gray-500 mb-2 font-medium uppercase tracking-wider">
+          Filtrar por fuente {selectedSource && `(${selectedSource})`}
+        </p>
+        <div
+          ref={sourcesContainerRef}
+          className="flex gap-2 overflow-x-auto pb-2 w-full cursor-grab active:cursor-grabbing scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600"
+          onMouseDown={(e) => handleMouseDown(e, sourcesContainerRef)}
+          onMouseLeave={() => handleMouseLeave(sourcesContainerRef)}
+          onMouseUp={() => handleMouseUp(sourcesContainerRef)}
+          onMouseMove={(e) => handleMouseMove(e, sourcesContainerRef)}
         >
-          <div className="flex items-start justify-between gap-2 mb-2">
-            <span className={`inline-block px-2.5 py-1 text-xs font-semibold rounded-full border ${getCategoryColor(article.category)}`}>
-              {article.category}
-            </span>
-            <span className="text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap">
-              {formatDate(article.publishedAt)}
-            </span>
-          </div>
-          
-          <h4 className="text-base font-semibold mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-2">
-            {article.title}
-          </h4>
-          
-          <p className="text-sm text-gray-600 dark:text-gray-300 mb-3 line-clamp-3">
-            {article.summary}
-          </p>
-          
-          <div className="flex items-center justify-between">
-            <span className="text-xs text-gray-500 dark:text-gray-400">
-              Fuente: {article.source}
-            </span>
-            <span className="text-xs text-blue-600 dark:text-blue-400 group-hover:underline flex items-center gap-1">
-              Leer más <span>→</span>
-            </span>
-          </div>
-        </a>
-      ))}
+          {uniqueSources.map((source, index) => (
+            <button
+              key={index}
+              onClick={() => setSelectedSource(selectedSource === source ? null : source)}
+              className={`flex-none px-3 py-1 text-xs font-medium rounded-full whitespace-nowrap border transition-colors select-none ${selectedSource === source
+                ? 'bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-200 border-blue-200 dark:border-blue-700'
+                : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-700 hover:bg-gray-200 dark:hover:bg-gray-700'
+                }`}
+            >
+              {source}
+            </button>
+          ))}
+        </div>
+      </div>
     </div>
   )
 }

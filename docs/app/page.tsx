@@ -82,18 +82,19 @@ const IndexPage: FC = () => {
           <Features>
             <Feature
               index={0}
+              label="Caja #1"
               large
               centered
               id="docs-card"
             >
               <div className="relative w-full h-full flex flex-col">
                 <h3 className="text-2xl font-bold mb-4 text-center">
-                  Últimas noticias sobre la IA
+                  Últimas noticias sobre Inteligencia Artificial
                 </h3>
                 <AINews />
               </div>
             </Feature>
-            <Feature index={1} centered className="prose dark:prose-invert">
+            <Feature index={1} label="Caja #2" centered className="prose dark:prose-invert">
               <h3>Únete a la comunidad</h3>
               <p>
                 Si estás interesado en formar parte de este proyecto o solo quieres mantenerte informado.
@@ -148,6 +149,7 @@ const IndexPage: FC = () => {
             </Feature>
             <Feature
               index={2}
+              label="Caja #3"
               id="highlighting-card"
               href="/docs/guide/syntax-highlighting"
             >
@@ -159,7 +161,7 @@ const IndexPage: FC = () => {
                 Entiende qué hace la IA contigo y cómo proteger tus derechos.
               </p>
             </Feature>
-            <Feature index={3} href="/docs/guiden e/i18n">
+            <Feature index={3} label="Caja #4" href="/docs/guiden e/i18n">
               <h3>
                 Empresas <br className="show-on-mobile" />
                 y pymes
@@ -171,6 +173,7 @@ const IndexPage: FC = () => {
             </Feature>
             <Feature
               index={4}
+              label="Caja #5"
               centered
               className="flex flex-col items-center justify-center bg-[url(/assets/gradient-bg.jpeg)] bg-cover bg-center text-white"
               href="/docs/guide/markdown"
@@ -190,6 +193,7 @@ const IndexPage: FC = () => {
             </Feature>
             <Feature
               index={5}
+              label="Caja #6"
               centered
               className="feat-darkmode flex items-center justify-center"
             >
@@ -258,6 +262,7 @@ const IndexPage: FC = () => {
             </Feature>
             <Feature
               index={6}
+              label="Caja #7"
               large
               id="search-card"
               href="/docs/docs-theme/theme-configuration#search"
@@ -297,6 +302,7 @@ const IndexPage: FC = () => {
             </Feature>
             <Feature
               index={7}
+              label="Caja #8"
               large
               id="fs-card"
               style={{
@@ -318,6 +324,7 @@ const IndexPage: FC = () => {
             </Feature>
             <Feature
               index={8}
+              label="Caja #9"
               id="a11y-card"
               style={{
                 backgroundSize: 750,
@@ -331,7 +338,7 @@ const IndexPage: FC = () => {
                 such as <b>Increase Contrast</b> and <b>Reduce Motion</b>.
               </p>
             </Feature>
-            <Feature index={9} href="/docs/guide/ssg">
+            <Feature index={9} label="Caja #10" href="/docs/guide/ssg">
               <h3>
                 Hybrid rendering, <br />
                 next generation
@@ -353,7 +360,7 @@ const IndexPage: FC = () => {
                 .
               </p>
             </Feature>
-            <Feature index={10} large>
+            <Feature index={10} label="Caja #11" large>
               <h3>Y más...</h3>
               <p>
                 SEO / Diseño RTL / Temas Conectables / Componentes Integrados /

@@ -9,6 +9,7 @@ import { Feature, Features } from './_components/features'
 import { MotionDiv, MotionH3 } from './_components/framer-motion'
 import { I18n } from './_components/i18n-demo'
 import { AINews } from './_components/ai-news'
+import { TopAIToolsTable } from './_components/top-ai-tools-table'
 import { CustomSelect } from './_components/custom-select'
 import styles from './page.module.css'
 import './page.css'
@@ -303,42 +304,13 @@ const IndexPage: FC = () => {
             <Feature
               index={7}
               label="Caja #8"
-              large
               id="fs-card"
-              style={{
-                color: 'white',
-                backgroundImage:
-                  'url(/assets/routing.png), url(/assets/gradient-bg.jpeg)',
-                backgroundSize: '140%, 180%',
-                backgroundPosition: '130px -8px, top',
-                backgroundRepeat: 'no-repeat',
-                textShadow: '0 1px 6px rgb(38 59 82 / 18%)',
-                aspectRatio: '1.765'
-              }}
-              href="/docs/docs-theme/page-configuration"
+              className="!p-0 overflow-hidden"
+              style={{ gridColumn: '1 / -1' }}
             >
-              <h3>
-                Organize pages intuitively, <br />
-                with file-system routing from Next.js
-              </h3>
+              <TopAIToolsTable />
             </Feature>
-            <Feature
-              index={8}
-              label="Caja #9"
-              id="a11y-card"
-              style={{
-                backgroundSize: 750,
-                backgroundRepeat: 'no-repeat',
-                minHeight: 288
-              }}
-            >
-              <h3>A11y as a top priority</h3>
-              <p>
-                Nextra respects system options <br className="show-on-mobile" />
-                such as <b>Increase Contrast</b> and <b>Reduce Motion</b>.
-              </p>
-            </Feature>
-            <Feature index={9} label="Caja #10" href="/docs/guide/ssg">
+            <Feature index={8} label="Caja #10" href="/docs/guide/ssg">
               <h3>
                 Hybrid rendering, <br />
                 next generation
@@ -360,7 +332,7 @@ const IndexPage: FC = () => {
                 .
               </p>
             </Feature>
-            <Feature index={10} label="Caja #11" large>
+            <Feature index={9} label="Caja #11" large>
               <h3>Y más...</h3>
               <p>
                 SEO / Diseño RTL / Temas Conectables / Componentes Integrados /

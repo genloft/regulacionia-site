@@ -296,12 +296,23 @@ export async function GET(request: Request) {
       { url: 'https://www.europapress.es/rss/rss.aspx?ch=434', name: 'Europa Press Tech' },
       { url: 'https://www.20minutos.es/rss/tecnologia/', name: '20 Minutos Tech' },
 
+      // Fuentes Latinoamericanas
+      { url: 'https://www.xataka.com.mx/index.xml', name: 'Xataka México' },
+      { url: 'https://www.infobae.com/feeds/tecno', name: 'Infobae' },
+      { url: 'https://www.eluniversal.com.mx/rss/techbit.xml', name: 'El Universal' },
+      { url: 'https://servicios.lanacion.com.ar/herramientas/rss/tecnologia', name: 'La Nación' },
+      { url: 'https://www.eltiempo.com/rss/tecnosfera.xml', name: 'El Tiempo' },
+      { url: 'https://www.fayerwayer.com/arc/outboundfeeds/rss/', name: 'FayerWayer' },
+
       // Fuentes Internacionales / Europeas (Inglés)
       { url: 'https://techcrunch.com/category/artificial-intelligence/feed/', name: 'TechCrunch' },
       { url: 'https://www.theverge.com/rss/ai/index.xml', name: 'The Verge' },
       { url: 'https://www.wired.com/feed/tag/ai/latest/rss', name: 'Wired' },
       { url: 'https://www.politico.eu/section/technology/feed/', name: 'Politico EU' },
       { url: 'https://sifted.eu/feed', name: 'Sifted' },
+      { url: 'https://www.theguardian.com/technology/artificialintelligenceai/rss', name: 'The Guardian' },
+      { url: 'https://feeds.bbci.co.uk/news/technology/rss.xml', name: 'BBC Tech' },
+      { url: 'https://www.cnbc.com/id/19854910/device/rss/rss.html', name: 'CNBC Tech' },
 
       // Nuevas Fuentes Internacionales Top Tier
       { url: 'https://venturebeat.com/category/ai/feed/', name: 'VentureBeat' },
@@ -344,7 +355,7 @@ export async function GET(request: Request) {
           url: article.url,
           publishedAt: article.publishedAt,
           source: article.source.name,
-          originalLanguage: ['El País', 'El Mundo', 'ABC', 'Expansión', 'La Razón', 'El Español', 'La Vanguardia', 'El Diario', 'Cinco Días', 'Xataka', 'Genbeta', 'Hipertextual', 'Emprendedores', 'El Confidencial', 'Computer Hoy', 'Europa Press Tech', '20 Minutos Tech'].includes(feed.name) ? 'es' : 'en'
+          originalLanguage: ['TechCrunch', 'The Verge', 'Wired', 'Politico EU', 'Sifted', 'The Guardian', 'BBC Tech', 'CNBC Tech', 'VentureBeat', 'MIT Tech Review', 'Ars Technica', 'ZDNet', 'IEEE Spectrum', 'TNW', 'AI News'].includes(feed.name) ? 'en' : 'es'
         }))
 
         allArticles.push(...processedArticles)
@@ -426,19 +437,19 @@ export async function GET(request: Request) {
     console.log(`🇪🇸 Artículos en español: ${spanishArticles.length}`)
     console.log(`🇬🇧 Artículos en inglés: ${englishArticles.length}`)
 
-    // Priorizar contenido en español: tomar hasta 20 artículos (15 español + 5 inglés)
+    // Priorizar contenido en español: tomar hasta 25 artículos (25 español + 25 inglés)
     const selectedSpanish = spanishArticles
       .sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime())
-      .slice(0, 15)
+      .slice(0, 25)
 
     const selectedEnglish = englishArticles
       .sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime())
-      .slice(0, 15)
+      .slice(0, 25)
 
-    // Combinar y ordenar por fecha, limitar a 20
+    // Combinar y ordenar por fecha, limitar a 50
     const sortedArticles = [...selectedSpanish, ...selectedEnglish]
       .sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime())
-      .slice(0, 30)
+      .slice(0, 50)
 
     console.log(`✨ Devolviendo ${sortedArticles.length} noticias (${selectedSpanish.length} ES + ${selectedEnglish.length} EN)`)
 

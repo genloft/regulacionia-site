@@ -46,18 +46,117 @@ const formatDate = (dateString: string): string => {
   })
 }
 
-export const AINews: FC = () => {
-  const [news, setNews] = useState<NewsArticle[]>([])
-  const [selectedSource, setSelectedSource] = useState<string | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(false)
+interface ScrollableContainerProps {
+  children: React.ReactNode
+  className?: string
+  itemClassName?: string
+}
 
-  const newsContainerRef = useRef<HTMLDivElement>(null)
-  const sourcesContainerRef = useRef<HTMLDivElement>(null)
-
+const ScrollableContainer: FC<ScrollableContainerProps> = ({ children, className = '', itemClassName = '' }) => {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const [showLeftArrow, setShowLeftArrow] = useState(false)
+  const [showRightArrow, setShowRightArrow] = useState(false)
   const isDragging = useRef(false)
   const startX = useRef(0)
   const scrollLeft = useRef(0)
+
+  const checkScroll = () => {
+    if (!containerRef.current) return
+    const { scrollLeft, scrollWidth, clientWidth } = containerRef.current
+    setShowLeftArrow(scrollLeft > 0)
+    setShowRightArrow(scrollLeft < scrollWidth - clientWidth - 10) // -10 buffer
+  }
+
+  useEffect(() => {
+    checkScroll()
+    window.addEventListener('resize', checkScroll)
+    return () => window.removeEventListener('resize', checkScroll)
+  }, [children])
+
+  const scroll = (direction: 'left' | 'right') => {
+    if (!containerRef.current) return
+    const container = containerRef.current
+    const scrollAmount = container.clientWidth * 0.75
+    container.scrollBy({
+      left: direction === 'left' ? -scrollAmount : scrollAmount,
+      behavior: 'smooth'
+    })
+  }
+
+  const handleMouseDown = (e: React.MouseEvent) => {
+    if (!containerRef.current) return
+    isDragging.current = true
+    startX.current = e.pageX - containerRef.current.offsetLeft
+    scrollLeft.current = containerRef.current.scrollLeft
+    containerRef.current.style.cursor = 'grabbing'
+    containerRef.current.style.userSelect = 'none'
+  }
+
+  const handleMouseLeave = () => {
+    if (!containerRef.current) return
+    isDragging.current = false
+    containerRef.current.style.cursor = 'grab'
+    containerRef.current.style.removeProperty('user-select')
+  }
+
+  const handleMouseUp = () => {
+    if (!containerRef.current) return
+    isDragging.current = false
+    containerRef.current.style.cursor = 'grab'
+    containerRef.current.style.removeProperty('user-select')
+  }
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDragging.current || !containerRef.current) return
+    e.preventDefault()
+    const x = e.pageX - containerRef.current.offsetLeft
+    const walk = (x - startX.current) * 2
+    containerRef.current.scrollLeft = scrollLeft.current - walk
+  }
+
+  return (
+    <div className={`relative group/container ${className}`}>
+      {showLeftArrow && (
+        <button
+          onClick={() => scroll('left')}
+          className="absolute left-0 top-1/2 -translate-y-1/2 z-10 p-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-full shadow-md border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-white dark:hover:bg-gray-700 transition-all opacity-0 group-hover/container:opacity-100 disabled:opacity-0"
+          aria-label="Scroll left"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6" /></svg>
+        </button>
+      )}
+
+      <div
+        ref={containerRef}
+        className={`flex overflow-x-auto snap-x cursor-grab active:cursor-grabbing scrollbar-none [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none'] ${itemClassName}`}
+        onMouseDown={handleMouseDown}
+        onMouseLeave={handleMouseLeave}
+        onMouseUp={handleMouseUp}
+        onMouseMove={handleMouseMove}
+        onScroll={checkScroll}
+      >
+        {children}
+      </div>
+
+      {showRightArrow && (
+        <button
+          onClick={() => scroll('right')}
+          className="absolute right-0 top-1/2 -translate-y-1/2 z-10 p-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-full shadow-md border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-white dark:hover:bg-gray-700 transition-all opacity-0 group-hover/container:opacity-100 disabled:opacity-0"
+          aria-label="Scroll right"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6" /></svg>
+        </button>
+      )}
+    </div>
+  )
+}
+
+export const AINews: FC = () => {
+  const [news, setNews] = useState<NewsArticle[]>([])
+  const [selectedSource, setSelectedSource] = useState<string | null>(null)
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(false)
 
   useEffect(() => {
     const fetchNews = async () => {
@@ -78,37 +177,6 @@ export const AINews: FC = () => {
 
     fetchNews()
   }, [])
-
-  const handleMouseDown = (e: React.MouseEvent, ref: React.RefObject<HTMLDivElement | null>) => {
-    if (!ref.current) return
-    isDragging.current = true
-    startX.current = e.pageX - ref.current.offsetLeft
-    scrollLeft.current = ref.current.scrollLeft
-    ref.current.style.cursor = 'grabbing'
-    ref.current.style.userSelect = 'none'
-  }
-
-  const handleMouseLeave = (ref: React.RefObject<HTMLDivElement | null>) => {
-    if (!ref.current) return
-    isDragging.current = false
-    ref.current.style.cursor = 'grab'
-    ref.current.style.removeProperty('user-select')
-  }
-
-  const handleMouseUp = (ref: React.RefObject<HTMLDivElement | null>) => {
-    if (!ref.current) return
-    isDragging.current = false
-    ref.current.style.cursor = 'grab'
-    ref.current.style.removeProperty('user-select')
-  }
-
-  const handleMouseMove = (e: React.MouseEvent, ref: React.RefObject<HTMLDivElement | null>) => {
-    if (!isDragging.current || !ref.current) return
-    e.preventDefault()
-    const x = e.pageX - ref.current.offsetLeft
-    const walk = (x - startX.current) * 2 // Scroll-fast
-    ref.current.scrollLeft = scrollLeft.current - walk
-  }
 
   const recentNewsCount = news.filter(article => {
     const date = new Date(article.publishedAt)
@@ -143,11 +211,33 @@ export const AINews: FC = () => {
     )
   }
 
-  const uniqueSources = Array.from(new Set(news.map(article => article.source))).sort()
+  // Calculate available options based on current selection
+  const newsForSources = selectedCategory
+    ? news.filter(article => article.category === selectedCategory)
+    : news
 
-  const filteredNews = selectedSource
+  const newsForCategories = selectedSource
     ? news.filter(article => article.source === selectedSource)
     : news
+
+  const uniqueSources = Array.from(new Set(newsForSources.map(article => article.source))).sort()
+  const uniqueCategories = Array.from(new Set(newsForCategories.map(article => article.category))).sort()
+
+  const sourceCounts = newsForSources.reduce((acc, article) => {
+    acc[article.source] = (acc[article.source] || 0) + 1
+    return acc
+  }, {} as Record<string, number>)
+
+  const categoryCounts = newsForCategories.reduce((acc, article) => {
+    acc[article.category] = (acc[article.category] || 0) + 1
+    return acc
+  }, {} as Record<string, number>)
+
+  const filteredNews = news.filter(article => {
+    const sourceMatch = selectedSource ? article.source === selectedSource : true
+    const categoryMatch = selectedCategory ? article.category === selectedCategory : true
+    return sourceMatch && categoryMatch
+  })
 
   return (
     <div className="flex flex-col gap-2 font-sans antialiased h-full w-full">
@@ -159,25 +249,21 @@ export const AINews: FC = () => {
           </span>
           {recentNewsCount} noticias en las últimas 48h
         </span>
-
-        {selectedSource && (
+        {(selectedSource || selectedCategory) && (
           <button
-            onClick={() => setSelectedSource(null)}
-            className="text-xs text-blue-600 dark:text-blue-400 hover:underline"
+            onClick={() => {
+              setSelectedSource(null)
+              setSelectedCategory(null)
+            }}
+            className="text-xs px-2 py-1 rounded bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors flex items-center gap-1"
           >
-            Ver todas
+            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></svg>
+            Limpiar filtros
           </button>
         )}
       </div>
 
-      <div
-        ref={newsContainerRef}
-        className="flex gap-4 overflow-x-auto p-4 pb-4 snap-x w-full cursor-grab active:cursor-grabbing scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600"
-        onMouseDown={(e) => handleMouseDown(e, newsContainerRef)}
-        onMouseLeave={() => handleMouseLeave(newsContainerRef)}
-        onMouseUp={() => handleMouseUp(newsContainerRef)}
-        onMouseMove={(e) => handleMouseMove(e, newsContainerRef)}
-      >
+      <ScrollableContainer className="px-4 pb-2" itemClassName="gap-4">
         {filteredNews.length > 0 ? (
           filteredNews.map((article, index) => (
             <a
@@ -219,35 +305,56 @@ export const AINews: FC = () => {
           ))
         ) : (
           <div className="w-full text-center py-8 text-gray-500">
-            No hay noticias disponibles para esta fuente.
+            No hay noticias disponibles para esta selección.
           </div>
         )}
-      </div>
+      </ScrollableContainer>
 
-      <div className="px-4 pb-4 border-t border-gray-100 dark:border-gray-800 pt-3">
-        <p className="text-xs text-gray-500 mb-2 font-medium uppercase tracking-wider">
-          Filtrar por fuente {selectedSource && `(${selectedSource})`}
-        </p>
-        <div
-          ref={sourcesContainerRef}
-          className="flex gap-2 overflow-x-auto pb-2 w-full cursor-grab active:cursor-grabbing scrollbar-thin scrollbar-thumb-gray-300 dark:scrollbar-thumb-gray-600"
-          onMouseDown={(e) => handleMouseDown(e, sourcesContainerRef)}
-          onMouseLeave={() => handleMouseLeave(sourcesContainerRef)}
-          onMouseUp={() => handleMouseUp(sourcesContainerRef)}
-          onMouseMove={(e) => handleMouseMove(e, sourcesContainerRef)}
-        >
-          {uniqueSources.map((source, index) => (
-            <button
-              key={index}
-              onClick={() => setSelectedSource(selectedSource === source ? null : source)}
-              className={`flex-none px-3 py-1 text-xs font-medium rounded-full whitespace-nowrap border transition-colors select-none ${selectedSource === source
-                ? 'bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-200 border-blue-200 dark:border-blue-700'
-                : 'bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-700 hover:bg-gray-200 dark:hover:bg-gray-700'
-                }`}
-            >
-              {source}
-            </button>
-          ))}
+      <div className="px-4 py-2 mt-2">
+
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="bg-purple-50/50 dark:bg-purple-900/10 rounded-xl p-3 border border-purple-100 dark:border-purple-900/20">
+            <p className="text-xs text-purple-900 dark:text-purple-100 mb-2 font-medium flex items-center justify-start gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-purple-500"></span>
+              Filtrar por tema {selectedCategory && <span className="font-bold">({selectedCategory})</span>}
+            </p>
+            <ScrollableContainer itemClassName="gap-2 pb-1">
+              {uniqueCategories.map((category, index) => (
+                <button
+                  key={index}
+                  onClick={() => setSelectedCategory(selectedCategory === category ? null : category)}
+                  className={`flex-none px-3 py-1 text-xs font-medium rounded-full whitespace-nowrap border transition-colors select-none ${selectedCategory === category
+                    ? 'bg-purple-100 dark:bg-purple-900/50 text-purple-800 dark:text-purple-200 border-purple-200 dark:border-purple-700'
+                    : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700'
+                    }`}
+                >
+                  {category} <span className="opacity-60 ml-0.5">({categoryCounts[category]})</span>
+                </button>
+              ))}
+            </ScrollableContainer>
+          </div>
+
+          <div className="bg-blue-50/50 dark:bg-blue-900/10 rounded-xl p-3 border border-blue-100 dark:border-blue-900/20">
+            <p className="text-xs text-blue-900 dark:text-blue-100 mb-2 font-medium flex items-center justify-start gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+              Filtrar por fuente {selectedSource && <span className="font-bold">({selectedSource})</span>}
+            </p>
+            <ScrollableContainer itemClassName="gap-2 pb-1">
+              {uniqueSources.map((source, index) => (
+                <button
+                  key={index}
+                  onClick={() => setSelectedSource(selectedSource === source ? null : source)}
+                  className={`flex-none px-3 py-1 text-xs font-medium rounded-full whitespace-nowrap border transition-colors select-none ${selectedSource === source
+                    ? 'bg-blue-100 dark:bg-blue-900/50 text-blue-800 dark:text-blue-200 border-blue-200 dark:border-blue-700'
+                    : 'bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 border-gray-200 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700'
+                    }`}
+                >
+                  {source} <span className="opacity-60 ml-0.5">({sourceCounts[source]})</span>
+                </button>
+              ))}
+            </ScrollableContainer>
+          </div>
         </div>
       </div>
     </div>

@@ -10,7 +10,7 @@ interface BlogPost {
     date: string
     category: string
     readTime: string
-    image?: string
+    image: string
 }
 
 const FEATURED_POSTS: BlogPost[] = [
@@ -20,7 +20,8 @@ const FEATURED_POSTS: BlogPost[] = [
         description: 'Un análisis profundo sobre el nuevo modelo de Microsoft, sus implicaciones éticas y los desafíos regulatorios que presenta para la industria de la IA.',
         date: '16 Dic 2025',
         category: 'Análisis',
-        readTime: '8 min lectura'
+        readTime: '8 min lectura',
+        image: '/assets/blog/fara-7b-card.png'
     },
     {
         slug: 'agentes-ia-2026',
@@ -28,7 +29,8 @@ const FEATURED_POSTS: BlogPost[] = [
         description: 'Exploramos el futuro de los agentes autónomos, las tecnologías emergentes y lo que podemos esperar ver en el próximo año en el campo de la IA.',
         date: '15 Dic 2025',
         category: 'Tendencias',
-        readTime: '12 min lectura'
+        readTime: '12 min lectura',
+        image: '/assets/blog/agents-2026-card.png'
     }
 ]
 
@@ -52,7 +54,13 @@ export const BlogIndex: FC = () => {
                         href={`/blog/${post.slug}`}
                         className="group relative flex flex-col overflow-hidden rounded-2xl bg-gray-50 dark:bg-white/5 border border-gray-200 dark:border-white/10 hover:border-gray-300 dark:hover:border-white/20 transition-all duration-300"
                     >
-                        <div className="aspect-[16/9] bg-gray-200 dark:bg-white/10 w-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                        <div className="aspect-[16/9] w-full relative overflow-hidden">
+                            <img
+                                src={post.image}
+                                alt={post.title}
+                                className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500"
+                            />
+                        </div>
                         <div className="flex flex-col flex-1 p-6 sm:p-8">
                             <div className="flex items-center gap-3 text-sm text-gray-500 dark:text-gray-400 mb-3">
                                 <span className="font-medium text-blue-600 dark:text-blue-400">
@@ -91,7 +99,13 @@ export const BlogIndex: FC = () => {
                             href={`/blog/${post.slug}`}
                             className="group flex flex-col md:flex-row gap-6 md:gap-8 items-start p-6 rounded-xl hover:bg-gray-50 dark:hover:bg-white/5 transition-colors"
                         >
-                            <div className="w-full md:w-64 aspect-[3/2] rounded-lg bg-gray-200 dark:bg-white/10 flex-shrink-0" />
+                            <div className="w-full md:w-64 aspect-[3/2] rounded-lg overflow-hidden flex-shrink-0">
+                                <img
+                                    src={post.image}
+                                    alt={post.title}
+                                    className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-500"
+                                />
+                            </div>
                             <div className="flex-1 min-w-0">
                                 <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400 mb-2">
                                     <span className="font-medium text-blue-600 dark:text-blue-400">

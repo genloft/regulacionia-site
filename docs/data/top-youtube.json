@@ -1,0 +1,87 @@
+{
+    "lastUpdated": "16/12/2025",
+    "nextUpdate": "16/01/2026",
+    "summary": "Nuevas incorporaciones en divulgación técnica.",
+    "items": [
+        {
+            "rank": 1,
+            "name": "DotCSV",
+            "url": "https://www.youtube.com/c/DotCSV",
+            "followers": "780K",
+            "change": "=",
+            "country": "🇪🇸"
+        },
+        {
+            "rank": 2,
+            "name": "Xavier Mitjana",
+            "url": "https://www.youtube.com/@XavierMitjana",
+            "followers": "210K",
+            "change": "+1",
+            "country": "🇪🇸"
+        },
+        {
+            "rank": 3,
+            "name": "Jon Hernández",
+            "url": "https://www.youtube.com/@JonHernandezIA",
+            "followers": "180K",
+            "change": "-1",
+            "country": "🇪🇸"
+        },
+        {
+            "rank": 4,
+            "name": "EDteam",
+            "url": "https://www.youtube.com/c/EDteam",
+            "followers": "950K",
+            "change": "=",
+            "country": "🇵🇪"
+        },
+        {
+            "rank": 5,
+            "name": "SALVAJE",
+            "url": "https://www.youtube.com/@salvaje",
+            "followers": "120K",
+            "change": "+2",
+            "country": "🇪🇸"
+        },
+        {
+            "rank": 6,
+            "name": "Javi Manzano",
+            "url": "https://www.youtube.com/@JaviManzano",
+            "followers": "85K",
+            "change": "=",
+            "country": "🇪🇸"
+        },
+        {
+            "rank": 7,
+            "name": "Alejandro Rivera",
+            "url": "https://www.youtube.com/@AlejandroRivera",
+            "followers": "60K",
+            "change": "+1",
+            "country": "🇪🇸"
+        },
+        {
+            "rank": 8,
+            "name": "Migue Baena",
+            "url": "https://www.youtube.com/@MigueBaena",
+            "followers": "45K",
+            "change": "-1",
+            "country": "🇪🇸"
+        },
+        {
+            "rank": 9,
+            "name": "SpacioIA",
+            "url": "https://www.youtube.com/@SpacioIA",
+            "followers": "30K",
+            "change": "=",
+            "country": "🇪🇸"
+        },
+        {
+            "rank": 10,
+            "name": "Gustavo Entrala",
+            "url": "https://www.youtube.com/@gustavoentrala",
+            "followers": "20K",
+            "change": "NEW",
+            "country": "🇪🇸"
+        }
+    ]
+}

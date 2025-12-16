@@ -7,7 +7,7 @@ import NextImage from 'next/image'
 import { Footer, Layout, Link, Navbar } from 'nextra-theme-docs'
 import { Anchor, Banner, Head } from 'nextra/components'
 import type { FC, PropsWithChildren } from 'react'
-import inkeep from './showcase/_logos/inkeep.png'
+import inkeep from './proyectos/_logos/inkeep.png'
 import './globals.css'
 
 export const metadata: Metadata = {

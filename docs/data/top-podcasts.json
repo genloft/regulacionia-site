@@ -1,0 +1,87 @@
+{
+    "lastUpdated": "16/12/2025",
+    "nextUpdate": "16/01/2026",
+    "summary": "Auge de podcasts sobre ética y negocios.",
+    "items": [
+        {
+            "rank": 1,
+            "name": "Monos Estocásticos",
+            "url": "https://podcast.monosestocasticos.com/",
+            "followers": "Top 1",
+            "change": "=",
+            "country": "🇪🇸"
+        },
+        {
+            "rank": 2,
+            "name": "El Test de Turing",
+            "url": "https://www.eltestdeturing.com/",
+            "followers": "Top 5",
+            "change": "+1",
+            "country": "🇪🇸"
+        },
+        {
+            "rank": 3,
+            "name": "Inteligencia Artificial (Pocho Costa)",
+            "url": "https://pochocosta.com/",
+            "followers": "Top 5",
+            "change": "-1",
+            "country": "🇦🇷"
+        },
+        {
+            "rank": 4,
+            "name": "IA para los Negocios",
+            "url": "https://evoacademy.cl/podcast/",
+            "followers": "Top 10",
+            "change": "+2",
+            "country": "🇨🇱"
+        },
+        {
+            "rank": 5,
+            "name": "La Tertul-IA",
+            "url": "https://latertulia.es/",
+            "followers": "Top 10",
+            "change": "=",
+            "country": "🇪🇸"
+        },
+        {
+            "rank": 6,
+            "name": "Lo que AI que oír",
+            "url": "https://www.spain-ai.com/podcast/",
+            "followers": "Revelación",
+            "change": "+1",
+            "country": "🇪🇸"
+        },
+        {
+            "rank": 7,
+            "name": "TecnoSapiens",
+            "url": "https://www.tecnosapiens.com/",
+            "followers": "Nicho",
+            "change": "-1",
+            "country": "🇪🇸"
+        },
+        {
+            "rank": 8,
+            "name": "xHUB.AI",
+            "url": "https://xhub.ai/",
+            "followers": "Nicho",
+            "change": "=",
+            "country": "🇪🇸"
+        },
+        {
+            "rank": 9,
+            "name": "Horizonte Artificial",
+            "url": "https://horizonteartificial.com/",
+            "followers": "Crecimiento",
+            "change": "NEW",
+            "country": "🇪🇸"
+        },
+        {
+            "rank": 10,
+            "name": "Artificialmente Hablando",
+            "url": "https://cenia.cl/",
+            "followers": "Nuevo",
+            "change": "NEW",
+            "country": "🇨🇱"
+        }
+    ]
+}

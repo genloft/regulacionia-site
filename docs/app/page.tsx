@@ -18,6 +18,10 @@ import type { FC, FormEvent } from 'react'
 import { useState } from 'react'
 import docsCardDark from 'public/assets/card-1.dark.png'
 import docsCard from 'public/assets/card-1.png'
+import { RankingList } from './_components/ranking-list'
+import youtubeData from '../data/top-youtube.json'
+import podcastsData from '../data/top-podcasts.json'
+import xData from '../data/top-x.json'
 
 // export const metadata: Metadata = {
 //   description:
@@ -286,40 +290,41 @@ const IndexPage: FC = () => {
             >
               <TopAIToolsTable />
             </Feature>
-            <Feature index={8} href="/docs/guide/ssg">
-              <h3>
-                Hybrid rendering, <br />
-                next generation
-              </h3>
-              <p className="mr-6">
-                You can leverage the hybrid rendering power from Next.js with
-                your Markdown content including{' '}
-                <Link href="https://nextjs.org/docs/app/building-your-application/rendering/server-components">
-                  Server Components
-                </Link>
-                ,{' '}
-                <Link href="https://nextjs.org/docs/app/building-your-application/rendering/client-components">
-                  Client Components
-                </Link>
-                , and{' '}
-                <Link href="https://nextjs.org/docs/app/building-your-application/data-fetching/incremental-static-regeneration">
-                  Incremental Static Regeneration (ISR)
-                </Link>
-                .
-              </p>
+            <Feature
+              index={8}
+              id="youtube-list"
+              className="!p-0 !bg-transparent !shadow-none"
+            >
+              <RankingList
+                title="Top 10 YouTube IA"
+                icon={<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="red" stroke="currentColor" strokeWidth="0" strokeLinecap="round" strokeLinejoin="round"><path d="M2.5 17a24.12 24.12 0 0 1 0-10 2 2 0 0 1 1.4-1.4 49.56 49.56 0 0 1 16.2 0A2 2 0 0 1 21.5 7a24.12 24.12 0 0 1 0 10 2 2 0 0 1-1.4 1.4 49.55 49.55 0 0 1-16.2 0A2 2 0 0 1 2.5 17" /><path d="m10 15 5-3-5-3z" fill="white" stroke="none" /></svg>}
+                data={youtubeData}
+                colorClass="bg-red-50/50 dark:bg-red-900/10"
+              />
             </Feature>
-            <Feature index={9} large>
-              <h3>Y más...</h3>
-              <p>
-                SEO / Diseño RTL / Temas Conectables / Componentes Integrados /
-                Última Edición de Git / Multi-Docs...
-                <br />Un montón de nuevas posibilidades por explorar.
-              </p>
-              <p className="subtitle">
-                <Link className="no-underline" href="/docs">
-                  Empieza a usar Nextra →
-                </Link>
-              </p>
+            <Feature
+              index={9}
+              id="podcast-list"
+              className="!p-0 !bg-transparent !shadow-none"
+            >
+              <RankingList
+                title="Top 10 Podcasts IA"
+                icon={<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-purple-600 dark:text-purple-400"><path d="M12 6v13" /><path d="M19.914 11.086A2 2 0 0 0 18.5 10.5h-13a2 2 0 0 0-1.414.586l-1.5 1.5A2 2 0 0 0 2 14.001v2.172a2 2 0 0 0 .586 1.414l5 5A2 2 0 0 0 9 23.002H15a2 2 0 0 0 1.414-.586l5-5A2 2 0 0 0 22 16.173v-2.172a2 2 0 0 0-.586-1.414l-1.5-1.5Z" /><path d="M8 8a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2" /><path d="M6 5.26a6 6 0 0 1 12 0" /></svg>}
+                data={podcastsData}
+                colorClass="bg-purple-50/50 dark:bg-purple-900/10"
+              />
+            </Feature>
+            <Feature
+              index={10}
+              id="x-list"
+              className="!p-0 !bg-transparent !shadow-none"
+            >
+              <RankingList
+                title="Top 10 Cuentas X"
+                icon={<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="black" stroke="currentColor" strokeWidth="0" strokeLinecap="round" strokeLinejoin="round" className="dark:fill-white"><path d="M14.3 8.95 20.5 2h-3l-4.1 4.54L9.5 2H2l6.5 9.1L2 22h3l4.4-5 4.7 5h7.5l-7.3-8.05zM5.5 4h2.5l11 16h-2.5z" stroke="none" /></svg>}
+                data={xData}
+                colorClass="bg-blue-50/50 dark:bg-blue-900/10"
+              />
             </Feature>
           </Features>
         </div>

@@ -1,0 +1,87 @@
+{
+    "lastUpdated": "16/12/2025",
+    "nextUpdate": "16/01/2026",
+    "summary": "Expertos en ética ganan relevancia.",
+    "items": [
+        {
+            "rank": 1,
+            "name": "Javi López",
+            "url": "https://x.com/javilop",
+            "followers": "150K",
+            "change": "=",
+            "country": "🇪🇸"
+        },
+        {
+            "rank": 2,
+            "name": "Carlos Santana (DotCSV)",
+            "url": "https://x.com/DotCSV",
+            "followers": "280K",
+            "change": "=",
+            "country": "🇪🇸"
+        },
+        {
+            "rank": 3,
+            "name": "Alicia Asín",
+            "url": "https://x.com/aliciaasin",
+            "followers": "45K",
+            "change": "+1",
+            "country": "🇪🇸"
+        },
+        {
+            "rank": 4,
+            "name": "Mariano Sigman",
+            "url": "https://x.com/marianosigman",
+            "followers": "120K",
+            "change": "-1",
+            "country": "🇦🇷"
+        },
+        {
+            "rank": 5,
+            "name": "Kirk Borne",
+            "url": "https://x.com/KirkDBorne",
+            "followers": "400K",
+            "change": "=",
+            "country": "🇺🇸"
+        },
+        {
+            "rank": 6,
+            "name": "Ronald van Loon",
+            "url": "https://x.com/Ronald_vanLoon",
+            "followers": "350K",
+            "change": "=",
+            "country": "🇳🇱"
+        },
+        {
+            "rank": 7,
+            "name": "DAIL Software",
+            "url": "https://x.com/DailSoftware",
+            "followers": "10K",
+            "change": "+2",
+            "country": "🇪🇸"
+        },
+        {
+            "rank": 8,
+            "name": "Antonio Grasso",
+            "url": "https://x.com/antgrasso",
+            "followers": "300K",
+            "change": "-1",
+            "country": "🇮🇹"
+        },
+        {
+            "rank": 9,
+            "name": "Nvidia AI",
+            "url": "https://x.com/NVIDIAAI",
+            "followers": "2M",
+            "change": "=",
+            "country": "🇺🇸"
+        },
+        {
+            "rank": 10,
+            "name": "Google AI",
+            "url": "https://x.com/GoogleAI",
+            "followers": "1.5M",
+            "change": "=",
+            "country": "🇺🇸"
+        }
+    ]
+}

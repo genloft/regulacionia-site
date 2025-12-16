@@ -184,8 +184,9 @@ export default {
       typesetting: 'article'
     }
   },
-  showcase: {
+  proyectos: {
     type: 'page',
+    title: 'Proyectos',
     theme: {
       copyPage: false,
       typesetting: 'article',

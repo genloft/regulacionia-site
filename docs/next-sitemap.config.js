@@ -1,6 +1,6 @@
 /** @type {import('next-sitemap').IConfig} */
 export default {
-  siteUrl: 'https://nextra.site',
+  siteUrl: 'https://regulacionia.es',
   changefreq: 'weekly',
   priority: '0.5',
   generateIndexSitemap: false,

@@ -21,44 +21,60 @@ export const metadata: Metadata = {
     'RIA Andalucia',
     'IA Ética',
     'Etica tecnologica',
-    'Legislacion IA'
+    'Legislacion IA',
+    'Agentes IA',
+    'Fara-7b',
+    'Regulación Europa',
+    'Acta IA',
+    'Privacidad IA'
   ],
   generator: 'Next.js',
-  applicationName: 'Nextra',
+  applicationName: 'RegulacionIA',
   appleWebApp: {
-    title: 'Nextra'
+    title: 'RegulacionIA'
   },
   title: {
     default: 'RegulacionIA – Por el desarrollo ético de la IA',
     template: '%s | RegulacionIA'
   },
   openGraph: {
-    // https://github.com/vercel/next.js/discussions/50189#discussioncomment-10826632
     url: './',
-    siteName: 'Nextra',
+    siteName: 'RegulacionIA',
     locale: 'es_ES',
-    type: 'website'
+    type: 'website',
+    images: '/opengraph-image.jpeg'
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
   },
   other: {
     'msapplication-TileColor': '#fff'
   },
   twitter: {
-    site: 'https://nextra.site'
+    card: 'summary_large_image',
+    site: '@regulacionia',
+    creator: '@regulacionia'
   },
   alternates: {
-    // https://github.com/vercel/next.js/discussions/50189#discussioncomment-10826632
     canonical: './'
   }
 }
 
-const banner = (
-  <Banner>
-    🎉 Trabajando para empezar en 2026 🎉{' '}
-  </Banner>
-)
 const navbar = (
   <Navbar
-    logo={<ThemeAwareLogo />}
+    logo={
+      <div className="py-2">
+        <ThemeAwareLogo />
+      </div>
+    }
     projectLink="https://github.com/shuding/nextra"
   />
 )
@@ -109,7 +125,6 @@ const RootLayout: FC<LayoutProps<any>> = async ({ children }) => {
         </Script>
         <ChatButton />
         <Layout
-          banner={banner}
           navbar={navbar}
           pageMap={pageMap}
           docsRepositoryBase="https://github.com/shuding/nextra/tree/main/docs"

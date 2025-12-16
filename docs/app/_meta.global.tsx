@@ -22,7 +22,7 @@ const ExternalLink: FC<{ children: ReactNode }> = ({ children }) => {
 const FILE_CONVENTIONS: MetaRecord = {
   _: {
     type: 'separator',
-    title: 'Files'
+    title: 'Archivos'
   },
   'page-file': 'page.mdx',
   'meta-file': '_meta.js',
@@ -36,12 +36,12 @@ const FILE_CONVENTIONS: MetaRecord = {
   },
   _4: {
     type: 'separator',
-    title: 'Top-Level Files'
+    title: 'Archivos de Nivel Superior'
   },
   'mdx-components-file': 'mdx-components.js',
   _5: {
     type: 'separator',
-    title: 'Top-Level Folders'
+    title: 'Carpetas de Nivel Superior'
   },
   'content-directory': 'content',
   'src-directory': 'src',
@@ -68,7 +68,7 @@ const GUIDE: MetaRecord = {
     items: {
       index: '',
       ai: {
-        title: <span className="badge-new">Ask AI</span>
+        title: <span className="badge-new">Preguntar a IA</span>
       }
     },
     theme: {
@@ -78,7 +78,7 @@ const GUIDE: MetaRecord = {
   'github-alert-syntax': '',
   turbopack: '',
   _: {
-    title: 'Deploying',
+    title: 'Despliegue',
     href: 'https://nextjs.org/docs/app/building-your-application/deploying?utm_source=nextra.site&utm_medium=referral&utm_campaign=sidebar'
   }
 }
@@ -105,13 +105,14 @@ const BLOG_THEME: MetaRecord = {
 }
 
 export default {
+
   index: {
     type: 'page',
     display: 'hidden'
   },
   docs: {
     type: 'page',
-    title: 'Documentations',
+    title: 'Documentación',
     items: {
       index: '',
       'file-conventions': { items: FILE_CONVENTIONS },
@@ -120,7 +121,7 @@ export default {
       'built-ins': '',
       _: {
         type: 'separator',
-        title: 'Themes'
+        title: 'Temas'
       },
       'docs-theme': {
         items: {
@@ -136,18 +137,18 @@ export default {
       'custom-theme': '',
       __: {
         type: 'separator',
-        title: 'More'
+        title: 'Más'
       },
       'about-link': {
-        title: 'About Nextra',
+        title: 'Acerca de Nextra',
         href: '/about'
       },
       'next.js-link': {
-        title: 'Next.js Docs',
+        title: 'Documentación Next.js',
         href: 'https://nextjs.org?utm_source=nextra.site&utm_medium=referral&utm_campaign=sidebar'
       },
       'migration-from-v3': {
-        title: 'Migration from Nextra v3',
+        title: 'Migración desde Nextra v3',
         href: 'https://the-guild.dev/blog/nextra-4?utm_source=nextra.site&utm_campaign=sidebar&utm_content=sidebar_link#nextra-theme-docs-changes'
       }
     }
@@ -157,14 +158,14 @@ export default {
   },
   versions: {
     type: 'menu',
-    title: 'Versions',
+    title: 'Versiones',
     items: {
       _3: {
-        title: 'Nextra v3 Docs',
+        title: 'Documentación Nextra v3',
         href: 'https://nextra-v2-7hslbun8z-shud.vercel.app'
       },
       _2: {
-        title: 'Nextra v2 Docs',
+        title: 'Documentación Nextra v2',
         href: 'https://nextra-v2-oe0zrpzjp-shud.vercel.app'
       }
     }
@@ -178,21 +179,12 @@ export default {
   },
   about: {
     type: 'page',
+    title: 'Sobre RIA',
     theme: {
       typesetting: 'article'
     }
   },
   showcase: {
-    type: 'page',
-    theme: {
-      copyPage: false,
-      typesetting: 'article',
-      layout: 'full',
-      timestamp: false,
-      toc: false
-    }
-  },
-  sponsors: {
     type: 'page',
     theme: {
       copyPage: false,

@@ -60,7 +60,7 @@ const navbar = (
     logo={<ThemeAwareLogo />}
     projectLink="https://github.com/shuding/nextra"
   />
-) 
+)
 const footer = (
   <Footer className="flex-col items-center md:items-start">
     <a
@@ -74,7 +74,7 @@ const footer = (
       <VercelLogo height="20" />
     </a>
     <p className="mt-6 text-xs">
-      © {new Date().getFullYear()} The Nextra Project.
+      © {new Date().getFullYear()} REGULACIONIA (Con número de registro 1604 en el registro de asociaciones de Andalucía a fecha 04/11/2025).
     </p>
   </Footer>
 )

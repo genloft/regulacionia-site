@@ -1,0 +1,462 @@
+{
+  "metadata": {
+    "lastUpdated": "16 de diciembre de 2025",
+    "nextUpdate": "15 de enero de 2026",
+    "relevantChanges": [
+      "HuggingChat sube al #2 (▲8)",
+      "Notion AI destaca por sus nuevas funciones"
+    ]
+  },
+  "tools": [
+    {
+      "name": "ChatGPT",
+      "url": "https://chat.openai.com",
+      "icon": "🤖",
+      "usage": "Chatbot",
+      "price": "Gratis / $20 Plus",
+      "version": "GPT-4o",
+      "description": "El asistente de IA más popular, ideal para redacción, código y análisis general."
+    },
+    {
+      "name": "HuggingChat",
+      "url": "https://huggingface.co/chat",
+      "icon": "🤗",
+      "usage": "Open Source",
+      "price": "Totalmente Gratis",
+      "version": "Llama 3",
+      "description": "La alternativa abierta y ética para probar los últimos modelos open source."
+    },
+    {
+      "name": "Gemini",
+      "url": "https://gemini.google.com",
+      "icon": "✨",
+      "usage": "Chatbot",
+      "price": "Gratis / $20 Adv.",
+      "version": "1.5 Pro",
+      "description": "Integrado con Google, excelente para multimodalidad y ventanas de contexto enormes."
+    },
+    {
+      "name": "Perplexity",
+      "url": "https://perplexity.ai",
+      "icon": "🔍",
+      "usage": "Búsqueda",
+      "price": "Gratis / $20 Pro",
+      "version": "v3",
+      "description": "Motor de respuesta que cita fuentes, perfecto para investigación rápida y precisa."
+    },
+    {
+      "name": "Jasper",
+      "url": "https://jasper.ai",
+      "icon": "✍️",
+      "usage": "Marketing",
+      "price": "Desde $39/mes",
+      "version": "N/A",
+      "description": "Plataforma de contenido para equipos de marketing y empresas."
+    },
+    {
+      "name": "Copy.ai",
+      "url": "https://copy.ai",
+      "icon": "📝",
+      "usage": "Copywriting",
+      "price": "Gratis / $36 Pro",
+      "version": "N/A",
+      "description": "Automatización de ventas y marketing con flujos de trabajo de IA."
+    },
+    {
+      "name": "Writesonic",
+      "url": "https://writesonic.com",
+      "icon": "⚡",
+      "usage": "Contenido",
+      "price": "Gratis / $16/mes",
+      "version": "v5",
+      "description": "Generador de artículos SEO-friendly y contenido de marketing."
+    },
+    {
+      "name": "Character.ai",
+      "url": "https://character.ai",
+      "icon": "🎭",
+      "usage": "Personajes",
+      "price": "Gratis / $9.99+",
+      "version": "v1.2",
+      "description": "Chat con personalidades simuladas, ideal para entretenimiento y práctica de idiomas."
+    },
+    {
+      "name": "Poe",
+      "url": "https://poe.com",
+      "icon": "📱",
+      "usage": "Agregador",
+      "price": "Gratis / $19.99",
+      "version": "Multi",
+      "description": "Accede a múltiples modelos (GPT, Claude, etc.) desde una sola interfaz."
+    },
+    {
+      "name": "Claude",
+      "url": "https://claude.ai",
+      "icon": "🧠",
+      "usage": "Chatbot",
+      "price": "Gratis / $20 Pro",
+      "version": "3.5 Sonnet",
+      "description": "Destaca en razonamiento complejo, escritura natural y grandes volúmenes de texto."
+    },
+    {
+      "name": "Grammarly",
+      "url": "https://grammarly.com",
+      "icon": "✅",
+      "usage": "Escritura",
+      "price": "Gratis / $12+",
+      "version": "GO",
+      "description": "Corrección gramatical y mejora de estilo para escribir con confianza."
+    },
+    {
+      "name": "BloombergGPT",
+      "url": "https://bloomberg.com",
+      "icon": "📈",
+      "usage": "Finanzas",
+      "price": "Terminal ($$$)",
+      "version": "v1",
+      "description": "Modelo especializado en datos financieros y noticias de mercado."
+    },
+    {
+      "name": "Stable Diff.",
+      "url": "https://stability.ai",
+      "icon": "🌊",
+      "usage": "Imagen",
+      "price": "Gratis (Local)",
+      "version": "SD3",
+      "description": "El estándar open source, control total si tienes el hardware para ejecutarlo."
+    },
+    {
+      "name": "Pika",
+      "url": "https://pika.art",
+      "icon": "🐇",
+      "usage": "Video",
+      "price": "Gratis / $8+",
+      "version": "1.0",
+      "description": "Generación de video y animación divertida y fácil de usar."
+    },
+    {
+      "name": "Mem.ai",
+      "url": "https://mem.ai",
+      "icon": "🧠",
+      "usage": "Notas",
+      "price": "Gratis / $10+",
+      "version": "X",
+      "description": "Notas auto-organizadas que conectan tus ideas automáticamente."
+    },
+    {
+      "name": "Suno",
+      "url": "https://suno.ai",
+      "icon": "🎵",
+      "usage": "Música",
+      "price": "Gratis / $8+",
+      "version": "v3.5",
+      "description": "Crea canciones completas con letra y voz a partir de un simple prompt."
+    },
+    {
+      "name": "Scispace",
+      "url": "https://typeset.io",
+      "icon": "🚀",
+      "usage": "Papers",
+      "price": "Gratis / $12+",
+      "version": "Copilot",
+      "description": "Explica papers complejos y responde preguntas sobre su contenido."
+    },
+    {
+      "name": "Fireflies.ai",
+      "url": "https://fireflies.ai",
+      "icon": "🪰",
+      "usage": "Reuniones",
+      "price": "Gratis / $10+",
+      "version": "v2",
+      "description": "Graba y analiza tus llamadas para extraer insights y tareas."
+    },
+    {
+      "name": "Runway",
+      "url": "https://runwayml.com",
+      "icon": "🎥",
+      "usage": "Video",
+      "price": "Gratis / $12+",
+      "version": "Gen-3 Alpha",
+      "description": "Herramientas profesionales para generación y edición de video con IA."
+    },
+    {
+      "name": "Canva Magic",
+      "url": "https://canva.com",
+      "icon": "✨",
+      "usage": "Diseño",
+      "price": "Gratis / Pro",
+      "version": "Magic Studio",
+      "description": "Herramientas de diseño accesibles para no diseñadores, todo en uno."
+    },
+    {
+      "name": "Cursor",
+      "url": "https://cursor.sh",
+      "icon": "🖱️",
+      "usage": "Editor",
+      "price": "Gratis / $20 Pro",
+      "version": "v0.35",
+      "description": "Fork de VS Code con IA nativa, capaz de editar múltiples archivos a la vez."
+    },
+    {
+      "name": "Otter.ai",
+      "url": "https://otter.ai",
+      "icon": "🦦",
+      "usage": "Transcr.",
+      "price": "Gratis / $10+",
+      "version": "v4",
+      "description": "Transcribe reuniones en tiempo real y genera resúmenes automáticos."
+    },
+    {
+      "name": "GitHub Copilot",
+      "url": "https://github.com/features/copilot",
+      "icon": "💻",
+      "usage": "Código",
+      "price": "$10/mes (Indiv.)",
+      "version": "v2",
+      "description": "El autocompletado de código más usado, integrado directamente en VS Code."
+    },
+    {
+      "name": "Leonardo.ai",
+      "url": "https://leonardo.ai",
+      "icon": "🦁",
+      "usage": "Arte",
+      "price": "Gratis / $10+",
+      "version": "Phoenix",
+      "description": "Suite completa para assets de juegos y arte conceptual con mucho control."
+    },
+    {
+      "name": "Beautiful.ai",
+      "url": "https://beautiful.ai",
+      "icon": "💎",
+      "usage": "Slides",
+      "price": "$12/mes",
+      "version": "v1",
+      "description": "Diseño de diapositivas inteligente que se ajusta mientras escribes."
+    },
+    {
+      "name": "DALL-E 3",
+      "url": "https://openai.com/dall-e-3",
+      "icon": "🖼️",
+      "usage": "Imagen",
+      "price": "Incluido en Plus",
+      "version": "v3",
+      "description": "Integrado en ChatGPT, excelente para seguir instrucciones precisas en imágenes."
+    },
+    {
+      "name": "Tome",
+      "url": "https://tome.app",
+      "icon": "📖",
+      "usage": "Slides",
+      "price": "Gratis / Pro",
+      "version": "v2",
+      "description": "Narrativa visual y presentaciones generadas por IA."
+    },
+    {
+      "name": "Udio",
+      "url": "https://udio.com",
+      "icon": "🎶",
+      "usage": "Música",
+      "price": "Gratis / $10+",
+      "version": "v1",
+      "description": "Generación musical de alta fidelidad con gran control creativo."
+    },
+    {
+      "name": "Casetext",
+      "url": "https://casetext.com",
+      "icon": "📜",
+      "usage": "Legal",
+      "price": "Pago (CoCounsel)",
+      "version": "GPT-4",
+      "description": "Asistente legal fiable para revisión de documentos y deposiciones."
+    },
+    {
+      "name": "Microsoft 365",
+      "url": "https://microsoft.com",
+      "icon": "📎",
+      "usage": "Oficina",
+      "price": "$30/mes (Ent.)",
+      "version": "Copilot",
+      "description": "Tu asistente en Word, Excel y PowerPoint para productividad empresarial."
+    },
+    {
+      "name": "Replit Ghost",
+      "url": "https://replit.com",
+      "icon": "👻",
+      "usage": "IDE",
+      "price": "Gratis / $10+",
+      "version": "N/A",
+      "description": "IDE online colaborativo con IA integrada para generar y explicar código."
+    },
+    {
+      "name": "Murf.ai",
+      "url": "https://murf.ai",
+      "icon": "🎙️",
+      "usage": "Voz",
+      "price": "Gratis / $19+",
+      "version": "v2",
+      "description": "Estudio de voz en off versátil para creadores de contenido."
+    },
+    {
+      "name": "Cleo",
+      "url": "https://meetcleo.com",
+      "icon": "💰",
+      "usage": "Finanzas",
+      "price": "Gratis / $5.99",
+      "version": "v1",
+      "description": "Asistente financiero con personalidad que te ayuda a ahorrar."
+    },
+    {
+      "name": "Adobe Firefly",
+      "url": "https://firefly.adobe.com",
+      "icon": "🔥",
+      "usage": "Diseño",
+      "price": "Gratis / Créditos",
+      "version": "v3",
+      "description": "Generación de imágenes segura para uso comercial, integrada en Photoshop."
+    },
+    {
+      "name": "Tabnine",
+      "url": "https://tabnine.com",
+      "icon": "⌨️",
+      "usage": "Código",
+      "price": "Gratis / $12+",
+      "version": "Pro",
+      "description": "Asistente de código privado y seguro, entrenable con tu propio codebase."
+    },
+    {
+      "name": "Rocket Money",
+      "url": "https://rocketmoney.com",
+      "icon": "🚀",
+      "usage": "Finanzas",
+      "price": "Gratis / Pago",
+      "version": "N/A",
+      "description": "Gestiona suscripciones y negocia facturas automáticamente."
+    },
+    {
+      "name": "Taskade",
+      "url": "https://taskade.com",
+      "icon": "✅",
+      "usage": "Tareas",
+      "price": "Gratis / $4+",
+      "version": "v5",
+      "description": "Gestión de proyectos y tareas impulsada por agentes de IA."
+    },
+    {
+      "name": "Gamma",
+      "url": "https://gamma.app",
+      "icon": "📊",
+      "usage": "Slides",
+      "price": "Gratis / $8+",
+      "version": "v2",
+      "description": "Crea presentaciones, documentos y webs bonitas en segundos."
+    },
+    {
+      "name": "Khanmigo",
+      "url": "https://khanacademy.org",
+      "icon": "🎓",
+      "usage": "Tutor",
+      "price": "Donación ($4+)",
+      "version": "GPT-4",
+      "description": "Tutor socrático que guía a los estudiantes sin darles las respuestas."
+    },
+    {
+      "name": "HeyGen",
+      "url": "https://heygen.com",
+      "icon": "👋",
+      "usage": "Video",
+      "price": "Gratis / $24+",
+      "version": "v2",
+      "description": "Traducción de video y avatares personalizados con sincronización labial perfecta."
+    },
+    {
+      "name": "ElevenLabs",
+      "url": "https://elevenlabs.io",
+      "icon": "🔊",
+      "usage": "Voz",
+      "price": "Gratis / $5+",
+      "version": "v2",
+      "description": "La mejor síntesis de voz (TTS) y clonación de voz del mercado."
+    },
+    {
+      "name": "Midjourney",
+      "url": "https://midjourney.com",
+      "icon": "🎨",
+      "usage": "Imagen",
+      "price": "Desde $10/mes",
+      "version": "v6",
+      "description": "La referencia en calidad artística y fotorealismo para generación de imágenes."
+    },
+    {
+      "name": "Descript",
+      "url": "https://descript.com",
+      "icon": "🎞️",
+      "usage": "Edición",
+      "price": "Gratis / $12+",
+      "version": "v8",
+      "description": "Edita audio y video editando el texto transcrito. Mágico."
+    },
+    {
+      "name": "Duolingo Max",
+      "url": "https://duolingo.com",
+      "icon": "🦉",
+      "usage": "Idiomas",
+      "price": "$14/mes",
+      "version": "GPT-4",
+      "description": "Practica conversaciones y recibe explicaciones gramaticales personalizadas."
+    },
+    {
+      "name": "Consensus",
+      "url": "https://consensus.app",
+      "icon": "🔬",
+      "usage": "Ciencia",
+      "price": "Gratis / $8+",
+      "version": "v2",
+      "description": "Buscador de papers científicos que resume hallazgos clave."
+    },
+    {
+      "name": "Notion AI",
+      "url": "https://notion.so",
+      "icon": "📓",
+      "usage": "Notas",
+      "price": "$10/mes/user",
+      "version": "v2",
+      "description": "Escribe, resume y organiza tus notas directamente en tu espacio de trabajo."
+    },
+    {
+      "name": "Harvey",
+      "url": "https://harvey.ai",
+      "icon": "⚖️",
+      "usage": "Legal",
+      "price": "Contacto",
+      "version": "N/A",
+      "description": "IA para firmas de abogados de élite, especializada en derecho."
+    },
+    {
+      "name": "Codeium",
+      "url": "https://codeium.com",
+      "icon": "📦",
+      "usage": "Código",
+      "price": "Gratis / $10+",
+      "version": "v1",
+      "description": "Alternativa rápida y gratuita a Copilot para autocompletado de código."
+    },
+    {
+      "name": "Synthesia",
+      "url": "https://synthesia.io",
+      "icon": "🗣️",
+      "usage": "Avatares",
+      "price": "Desde $22/mes",
+      "version": "v3",
+      "description": "Crea videos con avatares parlantes realistas para formación y marketing."
+    },
+    {
+      "name": "Elicit",
+      "url": "https://elicit.com",
+      "icon": "🔎",
+      "usage": "Investig.",
+      "price": "Gratis / $10+",
+      "version": "v2",
+      "description": "Automatiza la revisión de literatura y extracción de datos de papers."
+    }
+  ]
+}

@@ -1,0 +1,41 @@
+name: Update AI Rankings
+
+on:
+  schedule:
+    # Run at 00:00 on day-of-month 15
+    - cron: '0 0 15 * *'
+  workflow_dispatch: # Allow manual trigger
+
+jobs:
+  update-rankings:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # Needed to push changes
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v3
+        with:
+          version: 9
+
+      - name: Install dependencies
+        run: pnpm install --no-frozen-lockfile
+
+      - name: Run Update Script
+        run: pnpm dlx tsx scripts/update-rankings.ts
+
+      - name: Commit and Push changes
+        run: |
+          git config --global user.name 'Rankings Bot'
+          git config --global user.email 'bot@regulacionia.com'
+          git add docs/data/ai-tools.json
+          git commit -m "🤖 Actualización automática de rankings mensuales"
+          git push

@@ -11,6 +11,7 @@ interface NewsArticle {
   url: string
   publishedAt: string
   source: string
+  originalLanguage?: string
 }
 
 const getCategoryColor = (category: string): string => {
@@ -46,115 +47,13 @@ const formatDate = (dateString: string): string => {
   })
 }
 
-interface ScrollableContainerProps {
-  children: React.ReactNode
-  className?: string
-  itemClassName?: string
-}
-
-const ScrollableContainer: FC<ScrollableContainerProps> = ({ children, className = '', itemClassName = '' }) => {
-  const containerRef = useRef<HTMLDivElement>(null)
-  const [showLeftArrow, setShowLeftArrow] = useState(false)
-  const [showRightArrow, setShowRightArrow] = useState(false)
-  const isDragging = useRef(false)
-  const startX = useRef(0)
-  const scrollLeft = useRef(0)
-
-  const checkScroll = () => {
-    if (!containerRef.current) return
-    const { scrollLeft, scrollWidth, clientWidth } = containerRef.current
-    setShowLeftArrow(scrollLeft > 0)
-    setShowRightArrow(scrollLeft < scrollWidth - clientWidth - 10) // -10 buffer
-  }
-
-  useEffect(() => {
-    checkScroll()
-    window.addEventListener('resize', checkScroll)
-    return () => window.removeEventListener('resize', checkScroll)
-  }, [children])
-
-  const scroll = (direction: 'left' | 'right') => {
-    if (!containerRef.current) return
-    const container = containerRef.current
-    const scrollAmount = container.clientWidth * 0.75
-    container.scrollBy({
-      left: direction === 'left' ? -scrollAmount : scrollAmount,
-      behavior: 'smooth'
-    })
-  }
-
-  const handleMouseDown = (e: React.MouseEvent) => {
-    if (!containerRef.current) return
-    isDragging.current = true
-    startX.current = e.pageX - containerRef.current.offsetLeft
-    scrollLeft.current = containerRef.current.scrollLeft
-    containerRef.current.style.cursor = 'grabbing'
-    containerRef.current.style.userSelect = 'none'
-  }
-
-  const handleMouseLeave = () => {
-    if (!containerRef.current) return
-    isDragging.current = false
-    containerRef.current.style.cursor = 'grab'
-    containerRef.current.style.removeProperty('user-select')
-  }
-
-  const handleMouseUp = () => {
-    if (!containerRef.current) return
-    isDragging.current = false
-    containerRef.current.style.cursor = 'grab'
-    containerRef.current.style.removeProperty('user-select')
-  }
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!isDragging.current || !containerRef.current) return
-    e.preventDefault()
-    const x = e.pageX - containerRef.current.offsetLeft
-    const walk = (x - startX.current) * 2
-    containerRef.current.scrollLeft = scrollLeft.current - walk
-  }
-
-  return (
-    <div className={`relative group/container ${className}`}>
-      {showLeftArrow && (
-        <button
-          onClick={() => scroll('left')}
-          className="absolute left-0 top-1/2 -translate-y-1/2 z-10 p-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-full shadow-md border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-white dark:hover:bg-gray-700 transition-all opacity-0 group-hover/container:opacity-100 disabled:opacity-0"
-          aria-label="Scroll left"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6" /></svg>
-        </button>
-      )}
-
-      <div
-        ref={containerRef}
-        className={`flex overflow-x-auto snap-x cursor-grab active:cursor-grabbing scrollbar-none [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none'] ${itemClassName}`}
-        onMouseDown={handleMouseDown}
-        onMouseLeave={handleMouseLeave}
-        onMouseUp={handleMouseUp}
-        onMouseMove={handleMouseMove}
-        onScroll={checkScroll}
-      >
-        {children}
-      </div>
-
-      {showRightArrow && (
-        <button
-          onClick={() => scroll('right')}
-          className="absolute right-0 top-1/2 -translate-y-1/2 z-10 p-2 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-full shadow-md border border-gray-200 dark:border-gray-700 text-gray-600 dark:text-gray-300 hover:bg-white dark:hover:bg-gray-700 transition-all opacity-0 group-hover/container:opacity-100 disabled:opacity-0"
-          aria-label="Scroll right"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m9 18 6-6-6-6" /></svg>
-        </button>
-      )}
-    </div>
-  )
-}
+import { ScrollableContainer } from './scrollable-container'
 
 export const AINews: FC = () => {
   const [news, setNews] = useState<NewsArticle[]>([])
   const [selectedSource, setSelectedSource] = useState<string | null>(null)
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
+  const [selectedLanguage, setSelectedLanguage] = useState<string | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
 
@@ -212,13 +111,17 @@ export const AINews: FC = () => {
   }
 
   // Calculate available options based on current selection
-  const newsForSources = selectedCategory
-    ? news.filter(article => article.category === selectedCategory)
-    : news
+  const newsForSources = news.filter(article => {
+    const categoryMatch = selectedCategory ? article.category === selectedCategory : true
+    const languageMatch = selectedLanguage ? article.originalLanguage === selectedLanguage : true
+    return categoryMatch && languageMatch
+  })
 
-  const newsForCategories = selectedSource
-    ? news.filter(article => article.source === selectedSource)
-    : news
+  const newsForCategories = news.filter(article => {
+    const sourceMatch = selectedSource ? article.source === selectedSource : true
+    const languageMatch = selectedLanguage ? article.originalLanguage === selectedLanguage : true
+    return sourceMatch && languageMatch
+  })
 
   const uniqueSources = Array.from(new Set(newsForSources.map(article => article.source))).sort()
   const uniqueCategories = Array.from(new Set(newsForCategories.map(article => article.category))).sort()
@@ -236,7 +139,8 @@ export const AINews: FC = () => {
   const filteredNews = news.filter(article => {
     const sourceMatch = selectedSource ? article.source === selectedSource : true
     const categoryMatch = selectedCategory ? article.category === selectedCategory : true
-    return sourceMatch && categoryMatch
+    const languageMatch = selectedLanguage ? article.originalLanguage === selectedLanguage : true
+    return sourceMatch && categoryMatch && languageMatch
   })
 
   return (
@@ -249,18 +153,36 @@ export const AINews: FC = () => {
           </span>
           {recentNewsCount} noticias en las últimas 48h
         </span>
-        {(selectedSource || selectedCategory) && (
-          <button
-            onClick={() => {
-              setSelectedSource(null)
-              setSelectedCategory(null)
-            }}
-            className="text-xs px-2 py-1 rounded bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors flex items-center gap-1"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></svg>
-            Limpiar filtros
-          </button>
-        )}
+        <div className="flex items-center gap-2">
+          <div className="flex bg-gray-100 dark:bg-gray-800 rounded-lg p-1">
+            <button
+              onClick={() => setSelectedLanguage(selectedLanguage === 'es' ? null : 'es')}
+              className={`px-2 py-0.5 text-xs rounded-md transition-colors ${selectedLanguage === 'es' ? 'bg-white dark:bg-gray-700 shadow-sm text-blue-600 dark:text-blue-400 font-medium' : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'}`}
+            >
+              ES
+            </button>
+            <button
+              onClick={() => setSelectedLanguage(selectedLanguage === 'en' ? null : 'en')}
+              className={`px-2 py-0.5 text-xs rounded-md transition-colors ${selectedLanguage === 'en' ? 'bg-white dark:bg-gray-700 shadow-sm text-blue-600 dark:text-blue-400 font-medium' : 'text-gray-500 hover:text-gray-700 dark:hover:text-gray-300'}`}
+            >
+              EN
+            </button>
+          </div>
+
+          {(selectedSource || selectedCategory || selectedLanguage) && (
+            <button
+              onClick={() => {
+                setSelectedSource(null)
+                setSelectedCategory(null)
+                setSelectedLanguage(null)
+              }}
+              className="text-xs px-2 py-1 rounded bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors flex items-center gap-1"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 6h18" /><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" /><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" /></svg>
+              Limpiar filtros
+            </button>
+          )}
+        </div>
       </div>
 
       <ScrollableContainer className="px-4 pb-2" itemClassName="gap-4">

@@ -112,46 +112,7 @@ export default {
   },
   docs: {
     type: 'page',
-    title: 'Documentación',
-    items: {
-      index: '',
-      'file-conventions': { items: FILE_CONVENTIONS },
-      guide: { items: GUIDE },
-      advanced: { items: ADVANCED },
-      'built-ins': '',
-      _: {
-        type: 'separator',
-        title: 'Temas'
-      },
-      'docs-theme': {
-        items: {
-          start: '',
-          'built-ins': {
-            items: {
-              layout: ''
-            }
-          }
-        }
-      },
-      'blog-theme': { items: BLOG_THEME },
-      'custom-theme': '',
-      __: {
-        type: 'separator',
-        title: 'Más'
-      },
-      'about-link': {
-        title: 'Acerca de Nextra',
-        href: '/about'
-      },
-      'next.js-link': {
-        title: 'Documentación Next.js',
-        href: 'https://nextjs.org?utm_source=nextra.site&utm_medium=referral&utm_campaign=sidebar'
-      },
-      'migration-from-v3': {
-        title: 'Migración desde Nextra v3',
-        href: 'https://the-guild.dev/blog/nextra-4?utm_source=nextra.site&utm_campaign=sidebar&utm_content=sidebar_link#nextra-theme-docs-changes'
-      }
-    }
+    title: 'Documentación'
   },
   api: {
     type: 'page'

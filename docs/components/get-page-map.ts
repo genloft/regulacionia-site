@@ -1,7 +1,6 @@
 import type { MetaJsonFile, PageMapItem } from 'nextra'
 import { getPageMap } from 'nextra/page-map'
 import { pageMap as apiPageMap } from '../app/api/[name]/page'
-import { pageMap as builtInsPageMap } from '../app/docs/built-ins/[name]/page'
 
 type PageMapVisitor = (item: PageMapItem) => PageMapItem
 
@@ -58,12 +57,6 @@ export const getEnhancedPageMap: typeof getPageMap = async (...args) => {
             },
             ...apiPageMap
           ]
-        }
-      }
-      if (item.route === '/docs/built-ins') {
-        return {
-          ...item,
-          children: [createMetaItem(builtInsPageMap), ...builtInsPageMap]
         }
       }
     }

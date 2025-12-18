@@ -14,6 +14,7 @@ export const Feature: FC<
     href?: string
     label?: string
     index: number
+    noIcon?: boolean
   } & ComponentProps<typeof MotionDiv>
 > = ({
   large,
@@ -24,6 +25,7 @@ export const Feature: FC<
   href,
   index,
   label,
+  noIcon,
   ...props
 }) => {
     return (
@@ -43,7 +45,7 @@ export const Feature: FC<
       >
         {label && <span className={styles.label}>{label}</span>}
         {children}
-        {href && (
+        {href && !noIcon && (
           <Link
             className={cn('x:focus-visible:nextra-focus', styles.link)}
             href={href}

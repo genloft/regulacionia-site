@@ -111,7 +111,7 @@ const IndexPage: FC = () => {
             <Feature
               index={0}
               id="highlighting-card"
-              href="/docs/guide/syntax-highlighting"
+              href="/docs/ciudadanos/introduccion-ia"
             >
               <h3>
                 Personas y Ciudadanía
@@ -120,7 +120,7 @@ const IndexPage: FC = () => {
                 Entiende qué hace la IA contigo y cómo proteger tus derechos.
               </p>
             </Feature>
-            <Feature index={1} href="/docs/guiden e/i18n" id="business-card">
+            <Feature index={1} href="/docs/empresas/fundamentos-negocios" id="business-card">
               <h3>
                 Empresas <br className="show-on-mobile" />
                 y pymes
@@ -129,13 +129,13 @@ const IndexPage: FC = () => {
                 Usa IA de forma segura y alineada con la regulación sin frenar tu innovación.
               </p>
             </Feature>
-            <Feature index={2} label="Formación" href="/docs/guide/i18n" id="course-card">
+            <Feature index={2} label="Formación" href="/docs/ciudadanos/educacion-aprendizaje" id="course-card" noIcon>
               <h3>
                 Curso RIA sobre Inteligencia artificial ética
               </h3>
-              <p className="mt-4 inline-block border border-white/30 bg-white/10 backdrop-blur-sm px-6 py-2 rounded-full text-sm font-semibold uppercase tracking-wider hover:bg-white/20 transition-colors">
+              <Link href="/docs/ciudadanos/educacion-aprendizaje" className="mt-4 inline-block border border-white/30 bg-white/10 backdrop-blur-sm px-6 py-2 rounded-full text-sm font-semibold uppercase tracking-wider hover:bg-white/20 transition-colors">
                 Apúntate ahora
-              </p>
+              </Link>
             </Feature>
             <Feature
               index={3}
